@@ -1,11 +1,14 @@
 ﻿using Oss.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Oss
 {
@@ -57,8 +60,13 @@ namespace Oss
                 httpRequestMessage.RequestUri = new Uri(OssUtils.DefaultEndpoint + bucketName);
                 httpRequestMessage.Headers.Host = "storage.aliyun.com";
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
+                if (!bucketName.StartsWith("/"))
+                    bucketName = "/" + bucketName;
                 OssRequestSigner.Sign(bucketName, httpRequestMessage, networkCredential);
-                var test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                string result = await test.Content.ReadAsStringAsync();
+
                 Console.ReadKey();
             }
             catch (Exception)

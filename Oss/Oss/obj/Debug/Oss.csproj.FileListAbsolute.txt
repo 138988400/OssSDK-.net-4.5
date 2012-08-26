@@ -1,0 +1,7 @@
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.csprojResolveAssemblyReference.cache
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\bin\Debug\Oss.exe
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\bin\Debug\Oss.pdb
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.exe
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.pdb
+C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.Resources.resources

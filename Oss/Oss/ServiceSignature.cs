@@ -16,11 +16,11 @@ namespace Oss
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException(Resources.ExceptionIfArgumentStringIsNullOrEmpty, "key");
+                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "key");
             }
             if (string.IsNullOrEmpty(data))
             {
-                throw new ArgumentException(Resources.ExceptionIfArgumentStringIsNullOrEmpty, "data");
+                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "data");
             }
             return this.ComputeSignatureCore(key, data);
         }

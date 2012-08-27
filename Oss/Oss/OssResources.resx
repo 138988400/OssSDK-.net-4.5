@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BucketNameInvalid" xml:space="preserve">
+    <value>"Bucket名称无效。Bucket 命名规范：\r\n1)只能包括小写字母，数字，下划线（_）和短横线（-）；\r\n2)必须以小写字母或者数字开头；\r\n3)长度必须在 3-255 字节之间。\r\n参数名: bucketName"</value>
+  </data>
   <data name="ExceptionIfArgumentStringIsNullOrEmpty" xml:space="preserve">
     <value>is null</value>
+  </data>
+  <data name="ExceptionInvalidResponse" xml:space="preserve">
+    <value>Invalid Response Exception</value>
   </data>
 </root>

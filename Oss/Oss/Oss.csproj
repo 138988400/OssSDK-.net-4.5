@@ -46,17 +46,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bucket.cs" />
+    <Compile Include="Deserial\DeserializerFactory.cs" />
+    <Compile Include="Deserial\IDeserializer.cs" />
+    <Compile Include="Deserial\ResponseDeserializationException.cs" />
+    <Compile Include="Deserial\ResponseDeserializer.cs" />
+    <Compile Include="Deserial\SimpleResponseDeserializer.cs" />
+    <Compile Include="Deserial\XmlDeserializerFactory.cs" />
+    <Compile Include="Deserial\XmlStreamDeserializer.cs" />
     <Compile Include="HmacSHA1Signature.cs" />
+    <Compile Include="Model\AccessControlPolicy.cs" />
+    <Compile Include="Model\ErrorResult.cs" />
+    <Compile Include="Model\IResponseHandler.cs" />
+    <Compile Include="Model\ResponseHandler.cs" />
+    <Compile Include="OssException.cs" />
+    <Compile Include="ServiceException.cs" />
+    <Compile Include="Utilities\ErrorResponseHandler.cs" />
+    <Compile Include="Utilities\ExceptionFactory.cs" />
     <Compile Include="Utilities\HttpUtils.cs" />
     <Compile Include="OssClient.cs" />
     <Compile Include="OssHttpRequestMessage.cs" />
     <Compile Include="OssRequestSigner.cs" />
     <Compile Include="Owner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="OssResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>OssResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ServiceSignature.cs" />
     <Compile Include="test.cs" />
@@ -65,9 +80,9 @@
     <Compile Include="Utilities\SignUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="OssResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>OssResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

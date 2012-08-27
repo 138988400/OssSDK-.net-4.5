@@ -22,14 +22,14 @@ namespace Oss {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class OssResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal OssResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Oss {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Oss.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Oss.OssResources", typeof(OssResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,29 @@ namespace Oss {
         }
         
         /// <summary>
+        ///   查找类似 &quot;Bucket名称无效。Bucket 命名规范：\r\n1)只能包括小写字母，数字，下划线（_）和短横线（-）；\r\n2)必须以小写字母或者数字开头；\r\n3)长度必须在 3-255 字节之间。\r\n参数名: bucketName&quot; 的本地化字符串。
+        /// </summary>
+        internal static string BucketNameInvalid {
+            get {
+                return ResourceManager.GetString("BucketNameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 is null 的本地化字符串。
         /// </summary>
         internal static string ExceptionIfArgumentStringIsNullOrEmpty {
             get {
                 return ResourceManager.GetString("ExceptionIfArgumentStringIsNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Invalid Response Exception 的本地化字符串。
+        /// </summary>
+        internal static string ExceptionInvalidResponse {
+            get {
+                return ResourceManager.GetString("ExceptionInvalidResponse", resourceCulture);
             }
         }
     }

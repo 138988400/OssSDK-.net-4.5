@@ -1,4 +1,6 @@
-﻿using Oss.Utilities;
+﻿using Oss.Deserial;
+using Oss.Model;
+using Oss.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,15 +34,15 @@ namespace Oss
             if (endpoint == null)
             {
 
-                throw new ArgumentNullException(Resources.ExceptionIfArgumentStringIsNullOrEmpty, "endpoint");
+                throw new ArgumentNullException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "endpoint");
             }
             if (string.IsNullOrEmpty(accessId))
             {
-                throw new ArgumentException(Resources.ExceptionIfArgumentStringIsNullOrEmpty, "accessId");
+                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "accessId");
             }
             if (string.IsNullOrEmpty(accessKey))
             {
-                throw new ArgumentException(Resources.ExceptionIfArgumentStringIsNullOrEmpty, "accessKey");
+                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "accessKey");
             }
 
             networkCredential = new NetworkCredential(accessId, accessKey);
@@ -53,6 +55,17 @@ namespace Oss
         {
             try
             {
+                if (string.IsNullOrEmpty(bucketName))
+                {
+                    throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
+                }
+
+                if (!OssUtils.IsBucketNameValid(bucketName))
+                {
+                    throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
+                }
+
+
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName);
 
                 httpRequestMessage.Method = HttpMethod.Put;
@@ -64,6 +77,15 @@ namespace Oss
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
                 HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                  //var temp =  DeserializerFactory.GetFactory().CreateErrorResultDeserializer();
+                  //ErrorResult error = await temp.Deserialize(test);
+                }
+
 
                 string result = await test.Content.ReadAsStringAsync();
 

@@ -13,7 +13,7 @@ namespace Oss
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                temp.CreateBucket("mydoc6");
+                temp.CreateBucket("mydoc11");
                 Console.ReadKey();
             }
             catch(Exception ex)

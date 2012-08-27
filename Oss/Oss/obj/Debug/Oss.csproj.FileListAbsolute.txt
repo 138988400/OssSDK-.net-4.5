@@ -12,3 +12,10 @@ K:\github\oss\Oss\Oss\bin\Debug\Oss.pdb
 K:\github\oss\Oss\Oss\obj\Debug\Oss.csprojResolveAssemblyReference.cache
 K:\github\oss\Oss\Oss\obj\Debug\Oss.Resources.resources
 K:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
+D:\github\oss\Oss\Oss\obj\Debug\Oss.exe
+D:\github\oss\Oss\Oss\obj\Debug\Oss.pdb
+D:\github\oss\Oss\Oss\bin\Debug\Oss.exe
+D:\github\oss\Oss\Oss\bin\Debug\Oss.pdb
+D:\github\oss\Oss\Oss\obj\Debug\Oss.csprojResolveAssemblyReference.cache
+D:\github\oss\Oss\Oss\obj\Debug\Oss.Resources.resources
+D:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache

@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="Bucket.cs" />
     <Compile Include="HmacSHA1Signature.cs" />
+    <Compile Include="Utilities\HttpUtils.cs" />
     <Compile Include="OssClient.cs" />
+    <Compile Include="OssHttpRequestMessage.cs" />
     <Compile Include="OssRequestSigner.cs" />
     <Compile Include="Owner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

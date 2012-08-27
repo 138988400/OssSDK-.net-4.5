@@ -12,13 +12,13 @@ namespace Oss.Utilities
         private const string _newLineMarker = "\n";
         private static IList<string> SIGNED_PARAMTERS = new List<string> { "acl", "uploadId", "partNumber", "uploads", "response-cache-control", "response-content-disposition", "response-content-encoding", "response-content-language", "response-content-type", "response-expires" };
 
-        private static string BuildCanonicalizedResource(string resourcePath, IDictionary<string, string> parameters)
+        private static string BuildCanonicalizedResource(OssHttpRequestMessage httpRequestMessage)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(resourcePath);
-            if (parameters != null)
+            builder.Append(httpRequestMessage.ResourcePath);
+            if (httpRequestMessage.Parameters != null)
             {
-                IOrderedEnumerable<string> parameterNames = from e in parameters.Keys
+                IOrderedEnumerable<string> parameterNames = from e in httpRequestMessage.Parameters.Keys
                     orderby e
                     select e;
                 char separater = '?';
@@ -28,7 +28,7 @@ namespace Oss.Utilities
                     {
                         builder.Append(separater);
                         builder.Append(paramName);
-                        string paramValue = parameters[paramName];
+                        string paramValue = httpRequestMessage.Parameters[paramName];
                         if (paramValue != null)
                         {
                             builder.Append("=").Append(paramValue);
@@ -40,7 +40,7 @@ namespace Oss.Utilities
             return builder.ToString();
         }
 
-        public static string BuildCanonicalString(string resourcePath, HttpRequestMessage httpRequestMessage)
+        public static string BuildCanonicalString(OssHttpRequestMessage httpRequestMessage)
         {
             
             StringBuilder builder = new StringBuilder();
@@ -53,7 +53,7 @@ namespace Oss.Utilities
             builder.Append("\n");
             builder.Append(DateUtils.FormatRfc822Date(httpRequestMessage.Headers.Date.Value.UtcDateTime));
             builder.Append("\n");
-            builder.Append(resourcePath);
+            builder.Append(BuildCanonicalizedResource(httpRequestMessage));
             return builder.ToString();
 
 

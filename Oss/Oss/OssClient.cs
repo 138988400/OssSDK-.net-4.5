@@ -53,16 +53,16 @@ namespace Oss
         {
             try
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName);
+
                 httpRequestMessage.Method = HttpMethod.Put;
                 //HttpContent temp = new StringContent("");
                 //httpRequestMessage.Content = temp;
-                httpRequestMessage.RequestUri = new Uri(OssUtils.DefaultEndpoint + bucketName);
+               // httpRequestMessage.RequestUri = new Uri(OssUtils.DefaultEndpoint + bucketName);
                 httpRequestMessage.Headers.Host = "storage.aliyun.com";
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
-                if (!bucketName.StartsWith("/"))
-                    bucketName = "/" + bucketName;
-                OssRequestSigner.Sign(bucketName, httpRequestMessage, networkCredential);
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
                 HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
 
                 string result = await test.Content.ReadAsStringAsync();

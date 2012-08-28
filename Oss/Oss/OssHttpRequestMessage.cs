@@ -11,24 +11,18 @@ namespace Oss
     class OssHttpRequestMessage : HttpRequestMessage
     {
 
-        public OssHttpRequestMessage(string _ResourcePath, IDictionary<string, string> _parameters = null)
-            : this(OssUtils.DefaultEndpoint, _ResourcePath, _parameters)
+        public OssHttpRequestMessage(string bucketName, string key, IDictionary<string, string> _parameters = null)
+            : this(OssUtils.DefaultEndpoint, bucketName, key, _parameters)
         {
         }
 
-        public OssHttpRequestMessage(Uri endpoint, string _ResourcePath, IDictionary<string, string> _parameters = null)
+        public OssHttpRequestMessage(Uri endpoint, string bucketName, string key, IDictionary<string, string> _parameters = null)
         {
             Endpoint = endpoint;
-
-            if (!_ResourcePath.StartsWith("/"))
-                _ResourcePath = "/" + _ResourcePath;
-
-            ResourcePath = _ResourcePath;
-
+            ResourcePath = "/" + ((bucketName != null) ? bucketName : "") + ((key != null) ? ("/" + key) : "");
              parameters = _parameters;
              RequestUri = new Uri(BuildRequestUri());
         }
-
 
         public string BuildRequestUri()
         {

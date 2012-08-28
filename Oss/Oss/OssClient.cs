@@ -1,4 +1,5 @@
-﻿using Oss.Deserial;
+﻿using Oss.Commands;
+using Oss.Deserial;
 using Oss.Model;
 using Oss.Utilities;
 using System;
@@ -53,41 +54,24 @@ namespace Oss
 
         public async Task<Bucket> CreateBucket(string bucketName)
         {
-            if (string.IsNullOrEmpty(bucketName))
-            {
-                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
+            try{
+                      
+
+            bool result = await CreateBucketCommand.Create(httpClient, bucketName, networkCredential).Execute();
             }
-
-            if (!OssUtils.IsBucketNameValid(bucketName))
+            catch (AggregateException ex)
             {
-                throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
+                Console.WriteLine(ex.Message);
+
             }
-
-
-            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName);
-
-            httpRequestMessage.Method = HttpMethod.Put;
-            httpRequestMessage.Headers.Host = "storage.aliyun.com";
-            httpRequestMessage.Headers.Date = DateTime.UtcNow;
-
-            OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-            HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
-
-            if (test.IsSuccessStatusCode == false)
-            {
-                ErrorResponseHandler handler = new ErrorResponseHandler();
-                handler.Handle(test);
-            }
-
             return new Bucket(bucketName);
         }
 
         public async Task<IEnumerable<Bucket>> ListBuckets()
         {
-            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage("");
+            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(null, null);
 
             httpRequestMessage.Method = HttpMethod.Get;
-            httpRequestMessage.Headers.Host = "storage.aliyun.com";
             httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
             OssRequestSigner.Sign(httpRequestMessage, networkCredential);

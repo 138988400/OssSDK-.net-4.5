@@ -46,6 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bucket.cs" />
+    <Compile Include="Commands\CreateBucketCommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\OssCommand.cs" />
+    <Compile Include="Commands\OssCommandT.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
     <Compile Include="Deserial\IDeserializer.cs" />
     <Compile Include="Deserial\ListBucketResultDeserializer.cs" />

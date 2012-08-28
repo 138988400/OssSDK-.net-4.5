@@ -8,12 +8,19 @@ namespace Oss
 {
     class test
     {
-         static void Main(string[] args)
+
+        static async void list()
+        {
+            OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+            IEnumerable<Bucket> test = await temp.ListBuckets();
+        }
+        static void Main(string[] args)
         {
             try
             {
-                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                temp.CreateBucket("mydoc11");
+                list();
+                //OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                //IEnumerable<Bucket> test = temp.ListBuckets();
                 Console.ReadKey();
             }
             catch(Exception ex)
@@ -21,6 +28,9 @@ namespace Oss
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
             }
+
+
+           
 
         }
     }

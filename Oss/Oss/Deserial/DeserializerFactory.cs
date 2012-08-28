@@ -36,10 +36,10 @@ namespace Oss.Deserial
         //    return new GetObjectResponseDeserializer(request);
         //}
 
-        //public IDeserializer<ServiceResponse, IEnumerable<Bucket>> CreateListBucketResultDeserializer()
-        //{
-        //    return new ListBucketResultDeserializer(this.CreateContentDeserializer<ListAllMyBucketsResult>());
-        //}
+        public IDeserializer<HttpResponseMessage, Task<IEnumerable<Bucket>>> CreateListBucketResultDeserializer()
+        {
+            return new ListBucketResultDeserializer(this.CreateContentDeserializer<ListAllMyBucketsResult>());
+        }
 
         //public IDeserializer<ServiceResponse, ObjectListing> CreateListObjectsResultDeserializer()
         //{

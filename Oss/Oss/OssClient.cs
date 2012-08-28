@@ -51,50 +51,58 @@ namespace Oss
 
         }
 
-        public async void CreateBucket(string bucketName)
+        public async Task<Bucket> CreateBucket(string bucketName)
         {
-            try
+            if (string.IsNullOrEmpty(bucketName))
             {
-                if (string.IsNullOrEmpty(bucketName))
-                {
-                    throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
-                }
-
-                if (!OssUtils.IsBucketNameValid(bucketName))
-                {
-                    throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
-                }
-
-
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName);
-
-                httpRequestMessage.Method = HttpMethod.Put;
-                //HttpContent temp = new StringContent("");
-                //httpRequestMessage.Content = temp;
-               // httpRequestMessage.RequestUri = new Uri(OssUtils.DefaultEndpoint + bucketName);
-                httpRequestMessage.Headers.Host = "storage.aliyun.com";
-                httpRequestMessage.Headers.Date = DateTime.UtcNow;
-
-                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
-
-                if (test.IsSuccessStatusCode == false)
-                {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
-                  //var temp =  DeserializerFactory.GetFactory().CreateErrorResultDeserializer();
-                  //ErrorResult error = await temp.Deserialize(test);
-                }
-
-
-                string result = await test.Content.ReadAsStringAsync();
-
-                Console.ReadKey();
+                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
             }
-            catch (Exception)
+
+            if (!OssUtils.IsBucketNameValid(bucketName))
             {
-
+                throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
             }
+
+
+            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName);
+
+            httpRequestMessage.Method = HttpMethod.Put;
+            httpRequestMessage.Headers.Host = "storage.aliyun.com";
+            httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+            OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+            HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+            if (test.IsSuccessStatusCode == false)
+            {
+                ErrorResponseHandler handler = new ErrorResponseHandler();
+                handler.Handle(test);
+            }
+
+            return new Bucket(bucketName);
+        }
+
+        public async Task<IEnumerable<Bucket>> ListBuckets()
+        {
+            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage("");
+
+            httpRequestMessage.Method = HttpMethod.Get;
+            httpRequestMessage.Headers.Host = "storage.aliyun.com";
+            httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+            OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+            HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+            if (test.IsSuccessStatusCode == false)
+            {
+                ErrorResponseHandler handler = new ErrorResponseHandler();
+                handler.Handle(test);
+            }
+
+            var temp = DeserializerFactory.GetFactory().CreateListBucketResultDeserializer();
+            IEnumerable<Bucket> result = await   temp.Deserialize(test);
+            return result;
+
         }
     }
 }

@@ -48,6 +48,7 @@
     <Compile Include="Bucket.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
     <Compile Include="Deserial\IDeserializer.cs" />
+    <Compile Include="Deserial\ListBucketResultDeserializer.cs" />
     <Compile Include="Deserial\ResponseDeserializationException.cs" />
     <Compile Include="Deserial\ResponseDeserializer.cs" />
     <Compile Include="Deserial\SimpleResponseDeserializer.cs" />
@@ -55,8 +56,10 @@
     <Compile Include="Deserial\XmlStreamDeserializer.cs" />
     <Compile Include="HmacSHA1Signature.cs" />
     <Compile Include="Model\AccessControlPolicy.cs" />
+    <Compile Include="Model\BucketModel.cs" />
     <Compile Include="Model\ErrorResult.cs" />
     <Compile Include="Model\IResponseHandler.cs" />
+    <Compile Include="Model\ListAllMyBucketsResult.cs" />
     <Compile Include="Model\ResponseHandler.cs" />
     <Compile Include="OssException.cs" />
     <Compile Include="ServiceException.cs" />

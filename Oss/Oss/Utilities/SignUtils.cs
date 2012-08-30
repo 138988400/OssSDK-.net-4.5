@@ -45,68 +45,59 @@ namespace Oss.Utilities
             
             StringBuilder builder = new StringBuilder();
             builder.Append(httpRequestMessage.Method).Append("\n");
-            if (httpRequestMessage.Content!= null && httpRequestMessage.Content.Headers.ContentType != null)
-                builder.Append(httpRequestMessage.Content.Headers.ContentType.ToString());
-            builder.Append("\n");
+            IDictionary<string, string> headersToSign = new Dictionary<string, string>();
+
+            if (httpRequestMessage.Content != null && httpRequestMessage.Content.Headers.ContentType != null)
+            {
+                headersToSign.Add("Content-Type".ToLowerInvariant(), httpRequestMessage.Content.Headers.ContentType.MediaType);
+            }
             if (httpRequestMessage.Content != null && httpRequestMessage.Content.Headers.ContentMD5 != null)
-                builder.Append(httpRequestMessage.Content.Headers.ContentMD5.ToString());
-            builder.Append("\n");
-            builder.Append(DateUtils.FormatRfc822Date(httpRequestMessage.Headers.Date.Value.UtcDateTime));
-            builder.Append("\n");
+            {
+                headersToSign.Add("Content-MD5".ToLowerInvariant(), httpRequestMessage.Content.Headers.ContentMD5.ToString());
+            }
+
+            headersToSign.Add("Date".ToLowerInvariant(), DateUtils.FormatRfc822Date(httpRequestMessage.Headers.Date.Value.UtcDateTime));
+
+            if (!headersToSign.ContainsKey("Content-Type".ToLowerInvariant()))
+            {
+                headersToSign.Add("Content-Type".ToLowerInvariant(), "");
+            }
+
+            if (!headersToSign.ContainsKey("Content-MD5".ToLowerInvariant()))
+            {
+                headersToSign.Add("Content-MD5".ToLowerInvariant(), "");
+            }
+
+            if (httpRequestMessage.Parameters != null)
+            {
+                foreach (KeyValuePair<string, string> p in httpRequestMessage.Parameters)
+                {
+                    if (p.Key.StartsWith("x-oss-"))
+                    {
+                        headersToSign.Add(p.Key, p.Value);
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, string> entry in from e in headersToSign
+                                                           orderby e.Key
+                                                           select e)
+            {
+                string key = entry.Key;
+                object value = entry.Value;
+                if (key.StartsWith("x-oss-"))
+                {
+                    builder.Append(key).Append(':').Append(value);
+                }
+                else
+                {
+                    builder.Append(value);
+                }
+                builder.Append("\n");
+            }
+
             builder.Append(BuildCanonicalizedResource(httpRequestMessage));
             return builder.ToString();
-
-
-
-            //IDictionary<string, string> headers = httpRequestMessag;
-           
-            //if (headers != null)
-            //{
-            //    foreach (KeyValuePair<string, string> header in headers)
-            //    {
-            //        string lowerKey = header.Key.ToLowerInvariant();
-            //        if (((lowerKey == "Content-Type".ToLowerInvariant()) || (lowerKey == "Content-MD5".ToLowerInvariant())) || ((lowerKey == "Date".ToLowerInvariant()) || lowerKey.StartsWith("x-oss-")))
-            //        {
-            //            headersToSign.Add(lowerKey, header.Value);
-            //        }
-            //    }
-            //}
-            //if (!headersToSign.ContainsKey("Content-Type".ToLowerInvariant()))
-            //{
-            //    headersToSign.Add("Content-Type".ToLowerInvariant(), "");
-            //}
-            //if (!headersToSign.ContainsKey("Content-MD5".ToLowerInvariant()))
-            //{
-            //    headersToSign.Add("Content-MD5".ToLowerInvariant(), "");
-            //}
-            //if (request.Parameters != null)
-            //{
-            //    foreach (KeyValuePair<string, string> p in request.Parameters)
-            //    {
-            //        if (p.Key.StartsWith("x-oss-"))
-            //        {
-            //            headersToSign.Add(p.Key, p.Value);
-            //        }
-            //    }
-            //}
-            //foreach (KeyValuePair<string, string> entry in from e in headersToSign
-            //    orderby e.Key
-            //    select e)
-            //{
-            //    string key = entry.Key;
-            //    object value = entry.Value;
-            //    if (key.StartsWith("x-oss-"))
-            //    {
-            //        builder.Append(key).Append(':').Append(value);
-            //    }
-            //    else
-            //    {
-            //        builder.Append(value);
-            //    }
-            //    builder.Append("\n");
-            //}
-            //builder.Append(BuildCanonicalizedResource(resourcePath, request.Parameters));
-            //return builder.ToString();
         }
     }
 }

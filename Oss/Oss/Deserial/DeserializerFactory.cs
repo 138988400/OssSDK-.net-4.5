@@ -46,10 +46,10 @@ namespace Oss.Deserial
         //    return new ListObjectsResponseDeserializer(this.CreateContentDeserializer<ListBucketResult>());
         //}
 
-        //public IDeserializer<ServiceResponse, PutObjectResult> CreatePutObjectReusltDeserializer()
-        //{
-        //    return new PutObjectResponseDeserializer();
-        //}
+        public IDeserializer<HttpResponseMessage, PutObjectResult> CreatePutObjectReusltDeserializer()
+        {
+            return new PutObjectResponseDeserializer();
+        }
 
         //public static DeserializerFactory GetFactory()
         //{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,6 +10,15 @@ namespace Oss
 {
     class test
     {
+        static async void PutObject()
+        {
+            OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+            FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\c# 5.0.pdf", FileMode.Open);
+            ObjectMetadata oMetaData= new ObjectMetadata();
+            await temp.PutObject("devdoc", "c# 5.0.pdf", fs, oMetaData);
+            fs.Dispose();
+        }
+
 
         static async void list()
         {
@@ -37,8 +47,9 @@ namespace Oss
         {
             try
             {
-             //   createBuket();
-               list();
+             //   list();
+               // createBuket();
+                PutObject();
                 // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
                 //Bucket test =  temp.CreateBucket("mydoc10");
                 Console.ReadKey();

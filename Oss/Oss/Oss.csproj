@@ -54,9 +54,11 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\OssCommand.cs" />
     <Compile Include="Commands\OssCommandT.cs" />
+    <Compile Include="Commands\PutObjectCommand.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
     <Compile Include="Deserial\IDeserializer.cs" />
     <Compile Include="Deserial\ListBucketResultDeserializer.cs" />
+    <Compile Include="Deserial\PutObjectResponseDeserializer.cs" />
     <Compile Include="Deserial\ResponseDeserializationException.cs" />
     <Compile Include="Deserial\ResponseDeserializer.cs" />
     <Compile Include="Deserial\SimpleResponseDeserializer.cs" />
@@ -69,7 +71,11 @@
     <Compile Include="Model\IResponseHandler.cs" />
     <Compile Include="Model\ListAllMyBucketsResult.cs" />
     <Compile Include="Model\ResponseHandler.cs" />
+    <Compile Include="ObjectMetadata.cs" />
+    <Compile Include="OssClientHelper.cs" />
     <Compile Include="OssException.cs" />
+    <Compile Include="OssObject.cs" />
+    <Compile Include="PutObjectResult.cs" />
     <Compile Include="ServiceException.cs" />
     <Compile Include="Utilities\ErrorResponseHandler.cs" />
     <Compile Include="Utilities\ExceptionFactory.cs" />

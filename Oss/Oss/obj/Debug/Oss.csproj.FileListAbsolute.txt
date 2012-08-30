@@ -30,3 +30,7 @@ D:\github\oss\Oss\Oss\bin\Debug\Oss.exe.config
 D:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.dll
 D:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.xml
 D:\github\oss\Oss\Oss\bin\Debug\zh-Hans\System.Net.Http.Formatting.resources.dll
+C:\github\oss\Oss\Oss\bin\Debug\Oss.exe.config
+C:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.dll
+C:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.xml
+C:\github\oss\Oss\Oss\bin\Debug\zh-Hans\System.Net.Http.Formatting.resources.dll

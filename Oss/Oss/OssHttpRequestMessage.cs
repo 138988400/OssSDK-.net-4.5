@@ -20,6 +20,7 @@ namespace Oss
         {
             Endpoint = endpoint;
             ResourcePath = "/" + ((bucketName != null) ? bucketName : "") + ((key != null) ? ("/" + key) : "");
+            ResourcePathUrl = OssUtils.MakeResourcePath(bucketName, key);
              parameters = _parameters;
              RequestUri = new Uri(BuildRequestUri());
         }
@@ -27,13 +28,13 @@ namespace Oss
         public string BuildRequestUri()
         {
             string uri = this.Endpoint.ToString();
-            if (!uri.EndsWith("/") && ((this.ResourcePath == null) || !this.ResourcePath.StartsWith("/")))
+            if (!uri.EndsWith("/") && ((this.ResourcePathUrl == null) || !this.ResourcePathUrl.StartsWith("/")))
             {
                 uri = uri + "/";
             }
-            if (this.ResourcePath != null)
+            if (this.ResourcePathUrl != null)
             {
-                uri = uri + this.ResourcePath;
+                uri = uri + this.ResourcePathUrl;
             }
 
             if (Parameters != null)
@@ -60,6 +61,7 @@ namespace Oss
             }
         }
 
+        public string ResourcePathUrl { get; set; }
         public string ResourcePath { get; set; }
 
         public Uri Endpoint { get; set; }

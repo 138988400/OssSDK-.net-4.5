@@ -74,7 +74,6 @@ namespace Oss
             try
             {
                 HttpClientHandler hand = new HttpClientHandler();
-               // HttpMessageHandler httpMessageHander = new HttpMessageHandler();
                 ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
                 HttpClient localHttpClient = new HttpClient(processMessageHander);
 
@@ -109,6 +108,69 @@ namespace Oss
 
                 var temp = DeserializerFactory.GetFactory().CreateListBucketResultDeserializer();
                 result = await temp.Deserialize(test);
+                localHttpClient.Dispose();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return result;
+
+        }
+
+        public async Task <PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata)
+        {
+            PutObjectResult result = null;
+            try
+            {
+                HttpClientHandler hand = new HttpClientHandler();
+                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
+                HttpClient localHttpClient = new HttpClient(processMessageHander);
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
+
+
+
+                httpRequestMessage.Method = HttpMethod.Put;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+                httpRequestMessage.Content = new StreamContent(content);
+
+
+                OssClientHelper.initialHttpRequestMessage(httpRequestMessage, metadata);
+
+               
+                
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+
+
+                processMessageHander.HttpSendProgress += (sender, e) =>
+                {
+                    int num = e.ProgressPercentage;
+                    //   Console.WriteLine(num);
+
+                };
+                processMessageHander.HttpReceiveProgress += (sender, e) =>
+                {
+                    int num = e.ProgressPercentage;
+                    // Console.WriteLine(num);
+
+                };
+
+                HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+
+                var temp = DeserializerFactory.GetFactory().CreatePutObjectReusltDeserializer();
+                result = temp.Deserialize(test);
+                localHttpClient.Dispose();
+
             }
             catch (Exception ex)
             {

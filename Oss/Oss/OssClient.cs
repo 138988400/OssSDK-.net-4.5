@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Handlers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -69,22 +70,51 @@ namespace Oss
 
         public async Task<IEnumerable<Bucket>> ListBuckets()
         {
-            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(null, null);
-
-            httpRequestMessage.Method = HttpMethod.Get;
-            httpRequestMessage.Headers.Date = DateTime.UtcNow;
-
-            OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-            HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
-
-            if (test.IsSuccessStatusCode == false)
+            IEnumerable<Bucket> result = null;
+            try
             {
-                ErrorResponseHandler handler = new ErrorResponseHandler();
-                handler.Handle(test);
+                HttpClientHandler hand = new HttpClientHandler();
+               // HttpMessageHandler httpMessageHander = new HttpMessageHandler();
+                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
+                HttpClient localHttpClient = new HttpClient(processMessageHander);
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(null, null);
+
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+
+
+                processMessageHander.HttpSendProgress += (sender, e) =>
+                    {
+                        int num = e.ProgressPercentage;
+                     //   Console.WriteLine(num);
+
+                    };
+                processMessageHander.HttpReceiveProgress += (sender, e) =>
+                {
+                    int num = e.ProgressPercentage;
+                   // Console.WriteLine(num);
+
+                };
+
+                HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+
+                var temp = DeserializerFactory.GetFactory().CreateListBucketResultDeserializer();
+                result = await temp.Deserialize(test);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
-            var temp = DeserializerFactory.GetFactory().CreateListBucketResultDeserializer();
-            IEnumerable<Bucket> result = await   temp.Deserialize(test);
             return result;
 
         }

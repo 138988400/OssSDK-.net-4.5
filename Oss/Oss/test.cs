@@ -17,12 +17,12 @@ namespace Oss
         }
 
 
-        static  void createBuket()
+        static void createBuket()
         {
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                Task<Bucket> test =  temp.CreateBucket("mydoc10");
+                Task<Bucket> test = temp.CreateBucket("mydoc10");
 
             }
             catch (AggregateException ex)
@@ -37,20 +37,20 @@ namespace Oss
         {
             try
             {
-                createBuket();
-               // list();
-               // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-               //Bucket test =  temp.CreateBucket("mydoc10");
+             //   createBuket();
+               list();
+                // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                //Bucket test =  temp.CreateBucket("mydoc10");
                 Console.ReadKey();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
             }
 
 
-           
+
 
         }
     }

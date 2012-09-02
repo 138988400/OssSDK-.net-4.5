@@ -260,5 +260,52 @@ namespace Oss
             }        
         }
 
+
+        public async Task<ObjectListing> ListObjects(string bucketName)
+        {
+            return await this.ListObjects(bucketName, null);
+        }
+
+        public async Task<ObjectListing> ListObjects(string bucketName, string prefix)
+        {
+            ListObjectsRequest temp = new ListObjectsRequest(bucketName)
+            {
+                Prefix = prefix
+            };
+            return await  this.ListObjects(temp);
+        }
+
+
+        public async Task<ObjectListing> ListObjects(ListObjectsRequest listObjectsRequest)
+        {
+            ObjectListing result = null;
+
+            try
+            {
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(listObjectsRequest.BucketName, null);
+
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+
+                var temp = DeserializerFactory.GetFactory().CreateListObjectsResultDeserializer();
+                result = await temp.Deserialize(test);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
+        }
+
     }
 }

@@ -87,15 +87,34 @@ namespace Oss
             }
         }
 
+        static async void listObjects()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                ListObjectsRequest arg = new ListObjectsRequest("devdoc2");
+               arg.MaxKeys = 3;
+                ObjectListing result = await temp.ListObjects(arg );
+
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
+
+
         static void Main(string[] args)
         {
             try
             {
+                listObjects();
              //   list();
                // createBuket();
                 //PutObject();
                // getBuketAcl();
-                deleteBuket();
+                //deleteBuket();
                // setBuketAcl();
                // getBuketAcl();
                 // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");

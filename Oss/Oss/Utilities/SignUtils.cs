@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,13 +69,13 @@ namespace Oss.Utilities
                 headersToSign.Add("Content-MD5".ToLowerInvariant(), "");
             }
 
-            if (httpRequestMessage.Parameters != null)
+            if (httpRequestMessage.Headers != null)
             {
-                foreach (KeyValuePair<string, string> p in httpRequestMessage.Parameters)
+                foreach (KeyValuePair<string, IEnumerable<string>> p in httpRequestMessage.Headers)
                 {
                     if (p.Key.StartsWith("x-oss-"))
                     {
-                        headersToSign.Add(p.Key, p.Value);
+                        headersToSign.Add(p.Key, (p.Value).First());
                     }
                 }
             }

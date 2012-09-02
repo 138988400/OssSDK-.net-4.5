@@ -51,7 +51,7 @@ namespace Oss
 
             foreach (KeyValuePair<string, string> entry in metadata.UserMetadata)
             {
-                hReqMes.Parameters.Add("x-oss-meta-" + entry.Key, entry.Value);
+                hReqMes.Headers.Pragma.Add(new NameValueHeaderValue("x-oss-meta-" + entry.Key, entry.Value));
             }
 
 

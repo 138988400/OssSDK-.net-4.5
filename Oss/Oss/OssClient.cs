@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Handlers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -212,6 +213,26 @@ namespace Oss
             return result;
 
 
+        }
+
+
+        public async void SetBucketAcl(string bucketName, CannedAccessControlList acl)
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters.Add("acl", null);
+            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null,parameters);
+
+            httpRequestMessage.Method = HttpMethod.Put;
+            httpRequestMessage.Headers.Date = DateTime.UtcNow;
+            httpRequestMessage.Headers.Add("x-oss-acl", acl.GetStringValue());
+            OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+            HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+            if (test.IsSuccessStatusCode == false)
+            {
+                ErrorResponseHandler handler = new ErrorResponseHandler();
+                handler.Handle(test);
+            }        
         }
 
     }

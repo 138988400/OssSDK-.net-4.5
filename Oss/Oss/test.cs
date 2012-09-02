@@ -42,6 +42,21 @@ namespace Oss
             }
         }
 
+        static async void getBuketAcl()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                AccessControlList test = await temp.GetBucketAcl("mydoc");
+
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
+
 
         static void Main(string[] args)
         {
@@ -49,7 +64,8 @@ namespace Oss
             {
              //   list();
                // createBuket();
-                PutObject();
+                //PutObject();
+                getBuketAcl();
                 // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
                 //Bucket test =  temp.CreateBucket("mydoc10");
                 Console.ReadKey();

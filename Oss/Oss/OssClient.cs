@@ -180,6 +180,39 @@ namespace Oss
             return result;
 
         }
+
+        public async Task<AccessControlList> GetBucketAcl(string bucketName)
+        {
+            AccessControlList result  = null;
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("acl", null);
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+                var temp = DeserializerFactory.GetFactory().CreateGetAclResultDeserializer();
+                result = await temp.Deserialize(test);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return result;
+
+
+        }
+
     }
 }
-;

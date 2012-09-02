@@ -21,10 +21,10 @@ namespace Oss.Deserial
             return new SimpleResponseDeserializer<ErrorResult>(this.CreateContentDeserializer<ErrorResult>());
         }
 
-        //public IDeserializer<ServiceResponse, AccessControlList> CreateGetAclResultDeserializer()
-        //{
-        //    return new GetAclResponseParser(this.CreateContentDeserializer<AccessControlPolicy>());
-        //}
+        public IDeserializer<HttpResponseMessage, Task<AccessControlList>> CreateGetAclResultDeserializer()
+        {
+            return new GetAclResponseParser(this.CreateContentDeserializer<AccessControlPolicy>());
+        }
 
         //public IDeserializer<ServiceResponse, ObjectMetadata> CreateGetObjectMetadataResultDeserializer()
         //{

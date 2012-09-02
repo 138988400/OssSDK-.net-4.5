@@ -49,13 +49,16 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessControlList.cs" />
     <Compile Include="Bucket.cs" />
+    <Compile Include="CannedAccessControlList.cs" />
     <Compile Include="Commands\CreateBucketCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\OssCommand.cs" />
     <Compile Include="Commands\OssCommandT.cs" />
     <Compile Include="Commands\PutObjectCommand.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
+    <Compile Include="Deserial\GetAclResponseParser.cs" />
     <Compile Include="Deserial\IDeserializer.cs" />
     <Compile Include="Deserial\ListBucketResultDeserializer.cs" />
     <Compile Include="Deserial\PutObjectResponseDeserializer.cs" />
@@ -64,7 +67,10 @@
     <Compile Include="Deserial\SimpleResponseDeserializer.cs" />
     <Compile Include="Deserial\XmlDeserializerFactory.cs" />
     <Compile Include="Deserial\XmlStreamDeserializer.cs" />
+    <Compile Include="Grant.cs" />
+    <Compile Include="GroupGrantee.cs" />
     <Compile Include="HmacSHA1Signature.cs" />
+    <Compile Include="IGrantee.cs" />
     <Compile Include="Model\AccessControlPolicy.cs" />
     <Compile Include="Model\BucketModel.cs" />
     <Compile Include="Model\ErrorResult.cs" />
@@ -75,8 +81,10 @@
     <Compile Include="OssClientHelper.cs" />
     <Compile Include="OssException.cs" />
     <Compile Include="OssObject.cs" />
+    <Compile Include="Permission.cs" />
     <Compile Include="PutObjectResult.cs" />
     <Compile Include="ServiceException.cs" />
+    <Compile Include="Utilities\EnumUtils.cs" />
     <Compile Include="Utilities\ErrorResponseHandler.cs" />
     <Compile Include="Utilities\ExceptionFactory.cs" />
     <Compile Include="Utilities\HttpUtils.cs" />
@@ -95,6 +103,7 @@
     <Compile Include="Utilities\DateUtils.cs" />
     <Compile Include="Utilities\OssUtils.cs" />
     <Compile Include="Utilities\SignUtils.cs" />
+    <Compile Include="Utilities\StringValueAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="OssResources.resx">

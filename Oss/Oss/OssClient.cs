@@ -69,6 +69,31 @@ namespace Oss
             return new Bucket(bucketName);
         }
 
+        public async void DeleteBucket(string bucketName)
+        {
+            try
+            {
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null);
+
+                httpRequestMessage.Method = HttpMethod.Delete;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
         public async Task<IEnumerable<Bucket>> ListBuckets()
         {
             IEnumerable<Bucket> result = null;

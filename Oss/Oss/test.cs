@@ -47,7 +47,7 @@ namespace Oss
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                AccessControlList test = await temp.GetBucketAcl("mydoc4");
+                AccessControlList test = await temp.GetBucketAcl("mydoc5");
 
             }
             catch (AggregateException ex)
@@ -72,6 +72,20 @@ namespace Oss
             }
         }
 
+        static void deleteBuket()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                temp.DeleteBucket("mydoc5");
+
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -80,7 +94,8 @@ namespace Oss
              //   list();
                // createBuket();
                 //PutObject();
-                getBuketAcl();
+               // getBuketAcl();
+                deleteBuket();
                // setBuketAcl();
                // getBuketAcl();
                 // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");

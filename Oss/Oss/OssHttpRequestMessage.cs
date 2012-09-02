@@ -18,6 +18,16 @@ namespace Oss
 
         public OssHttpRequestMessage(Uri endpoint, string bucketName, string key, IDictionary<string, string> _parameters = null)
         {
+            if (string.IsNullOrEmpty(bucketName))
+            {
+                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
+            }
+
+            if (!OssUtils.IsBucketNameValid(bucketName))
+            {
+                throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
+            }
+
             Endpoint = endpoint;
             ResourcePath = "/" + ((bucketName != null) ? bucketName : "") + ((key != null) ? ("/" + key) : "");
             ResourcePathUrl = OssUtils.MakeResourcePath(bucketName, key);

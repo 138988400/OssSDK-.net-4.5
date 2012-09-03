@@ -59,6 +59,8 @@
     <Compile Include="Commands\PutObjectCommand.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
     <Compile Include="Deserial\GetAclResponseParser.cs" />
+    <Compile Include="Deserial\GetObjectMetadataResponseDeserializer.cs" />
+    <Compile Include="Deserial\GetObjectResponseDeserializer.cs" />
     <Compile Include="Deserial\IDeserializer.cs" />
     <Compile Include="Deserial\ListBucketResultDeserializer.cs" />
     <Compile Include="Deserial\ListObjectsResponseDeserializer.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Deserial\SimpleResponseDeserializer.cs" />
     <Compile Include="Deserial\XmlDeserializerFactory.cs" />
     <Compile Include="Deserial\XmlStreamDeserializer.cs" />
+    <Compile Include="GetObjectRequest.cs" />
     <Compile Include="Grant.cs" />
     <Compile Include="GroupGrantee.cs" />
     <Compile Include="HmacSHA1Signature.cs" />
@@ -90,6 +93,7 @@
     <Compile Include="OssObjectSummary.cs" />
     <Compile Include="Permission.cs" />
     <Compile Include="PutObjectResult.cs" />
+    <Compile Include="ResponseHeaderOverrides.cs" />
     <Compile Include="ServiceException.cs" />
     <Compile Include="Utilities\EnumUtils.cs" />
     <Compile Include="Utilities\ErrorResponseHandler.cs" />

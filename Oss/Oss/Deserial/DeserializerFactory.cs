@@ -26,15 +26,15 @@ namespace Oss.Deserial
             return new GetAclResponseParser(this.CreateContentDeserializer<AccessControlPolicy>());
         }
 
-        //public IDeserializer<ServiceResponse, ObjectMetadata> CreateGetObjectMetadataResultDeserializer()
-        //{
-        //    return new GetObjectMetadataResponseDeserializer();
-        //}
+        public IDeserializer<HttpResponseMessage, ObjectMetadata> CreateGetObjectMetadataResultDeserializer()
+        {
+            return new GetObjectMetadataResponseDeserializer();
+        }
 
-        //public IDeserializer<ServiceResponse, OssObject> CreateGetObjectResultDeserializer(GetObjectRequest request)
-        //{
-        //    return new GetObjectResponseDeserializer(request);
-        //}
+        public IDeserializer<HttpResponseMessage, Task<OssObject>> CreateGetObjectResultDeserializer(GetObjectRequest request)
+        {
+            return new GetObjectResponseDeserializer(request);
+        }
 
         public IDeserializer<HttpResponseMessage, Task<IEnumerable<Bucket>>> CreateListBucketResultDeserializer()
         {

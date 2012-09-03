@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>SignatureDoesNotMatch</Code>\n  <Message>The request signature we calculated does not match the signature you provided. Check your key and signing method.</Message>\n  <StringToSignBytes>50 55 54 0A 0A 0A 53 75 6E 2C 20 32 36 20 41 75 67 20 32 30 31 32 20 31 32 3A 34 32 3A 32 37 20 47 4D 54 0A 2F 6D 79 64 6F 63 34 </StringToSignBytes>\n  <SignatureProvided>yDXTuEj8yX7aCOk7Emh/TlhJVrs=</SignatureProvided>\n  <StringToSign>PUT\n\n\nSun, 26 Aug 2012 12:42:27 GMT\n/mydoc4</StringToSign>\n  <OSSAccessKeyId>bm9crcnr0rtnuw8bnrfvq7w8</OSSAccessKeyId>\n  <RequestId>503A19B54DEF3F377EB51C7E</RequestId>\n  <HostId>storage.aliyun.com</HostId>\n</Error>\n"
@@ -105,11 +106,39 @@ namespace Oss
         }
 
 
+        static async void getObject()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                OssObject result = await temp.GetObject("devdoc", "c# 5.0.pdf");
+
+                
+
+                  
+                FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\c# 5.0.pdf", FileMode.Open);
+                byte[] buffer = new byte[fs.Length];
+                result.Content.Read(buffer, 0, buffer.Length);
+                byte[] sh = MD5.Create().ComputeHash(buffer);
+               string hashCode = BitConverter.ToString(sh).Replace("-", string.Empty).ToLower();
+
+
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
+
+
+
         static void Main(string[] args)
         {
             try
             {
-                listObjects();
+                getObject();
+              //  listObjects();
              //   list();
                // createBuket();
                 //PutObject();

@@ -307,5 +307,44 @@ namespace Oss
             return result;
         }
 
+        public async Task<OssObject> GetObject(string bucketName, string key)
+        {
+            return await  this.GetObject(new GetObjectRequest(bucketName, key));
+        }
+
+        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest)
+        {
+
+            OssObject result = null;
+
+            try
+            {
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(getObjectRequest.BucketName, getObjectRequest.Key);
+                getObjectRequest.ResponseHeaders.Populate(httpRequestMessage.Headers);
+                getObjectRequest.Populate(httpRequestMessage.Headers);
+
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+
+                var temp = DeserializerFactory.GetFactory().CreateGetObjectResultDeserializer(getObjectRequest);
+                result = await temp.Deserialize(test);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return result;   
+        }
+
     }
 }

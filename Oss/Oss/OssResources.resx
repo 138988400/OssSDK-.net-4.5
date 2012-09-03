@@ -126,4 +126,7 @@
   <data name="ExceptionInvalidResponse" xml:space="preserve">
     <value>Invalid Response Exception</value>
   </data>
+  <data name="ObjectKeyInvalid" xml:space="preserve">
+    <value>Invalid Object Key Name</value>
+  </data>
 </root>

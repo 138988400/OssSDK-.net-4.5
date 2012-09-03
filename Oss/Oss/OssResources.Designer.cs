@@ -86,5 +86,14 @@ namespace Oss {
                 return ResourceManager.GetString("ExceptionInvalidResponse", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 Invalid Object Key Name 的本地化字符串。
+        /// </summary>
+        internal static string ObjectKeyInvalid {
+            get {
+                return ResourceManager.GetString("ObjectKeyInvalid", resourceCulture);
+            }
+        }
     }
 }

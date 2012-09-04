@@ -427,5 +427,73 @@ namespace Oss
 
         }
 
+        public async Task<string> MultipartUploadInitiate(string bucketName, string key)
+        {
+            string result = null;
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("uploads", null);
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Post;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+                var temp = DeserializerFactory.GetFactory().CreateInitiateMultipartUploadDeserializer();
+                result = await temp.Deserialize(test);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return result;
+
+        }
+
+        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadObject multiUploadObject)
+        {
+            MultipartUploadResult result = null;
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("partNumber", multiUploadObject.PartNumber);
+                parameters.Add("uploaded", "UploadId");
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Put;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+                httpRequestMessage.Content = new StreamContent(multiUploadObject.Content);
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+                var temp = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
+                result = temp.Deserialize(test);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return result;
+
+        }
+
     }
 }

@@ -62,8 +62,10 @@
     <Compile Include="Deserial\GetObjectMetadataResponseDeserializer.cs" />
     <Compile Include="Deserial\GetObjectResponseDeserializer.cs" />
     <Compile Include="Deserial\IDeserializer.cs" />
+    <Compile Include="Deserial\InitiateMultipartUploadDeserializer.cs" />
     <Compile Include="Deserial\ListBucketResultDeserializer.cs" />
     <Compile Include="Deserial\ListObjectsResponseDeserializer.cs" />
+    <Compile Include="Deserial\MultipartUploadDeserializer.cs" />
     <Compile Include="Deserial\PutObjectResponseDeserializer.cs" />
     <Compile Include="Deserial\ResponseDeserializationException.cs" />
     <Compile Include="Deserial\ResponseDeserializer.cs" />
@@ -79,12 +81,15 @@
     <Compile Include="Model\AccessControlPolicy.cs" />
     <Compile Include="Model\BucketModel.cs" />
     <Compile Include="Model\ErrorResult.cs" />
+    <Compile Include="Model\InitiateMultipartUploadResultModel.cs" />
     <Compile Include="Model\IResponseHandler.cs" />
     <Compile Include="Model\ListAllMyBucketsResult.cs" />
     <Compile Include="Model\ListBucketResult.cs" />
     <Compile Include="Model\ListBucketResultCommonPrefixes.cs" />
     <Compile Include="Model\ListBucketResultContents.cs" />
     <Compile Include="Model\ResponseHandler.cs" />
+    <Compile Include="MultipartUploadResult.cs" />
+    <Compile Include="MultiUploadObject.cs" />
     <Compile Include="ObjectListing.cs" />
     <Compile Include="ObjectMetadata.cs" />
     <Compile Include="OssClientHelper.cs" />

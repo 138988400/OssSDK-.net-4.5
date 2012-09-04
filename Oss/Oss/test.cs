@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oss.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -146,7 +147,7 @@ namespace Oss
             }
         }
 
-        static void deleteObject()
+        static  void deleteObject()
         {
             try
             {
@@ -161,11 +162,31 @@ namespace Oss
             }
         }
 
+        static async void MultipartUploadInitiate()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                string result = await temp.MultipartUploadInitiate("devdoc", "c# 5.0.pdf");
+
+                FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\c# 5.0.pdf", FileMode.Open);
+                MultiUploadObject arg = new MultiUploadObject() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "1", UploadId = result };
+                await temp.MultipartUpload(arg);
+                fs.Dispose();
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
+
         static void Main(string[] args)
         {
             try
             {
-                deleteObject();
+                MultipartUploadInitiate();
+              //  deleteObject();
                // getObject();
               //  listObjects();
              //   list();

@@ -80,6 +80,7 @@
     <Compile Include="ListObjectsRequest.cs" />
     <Compile Include="Model\AccessControlPolicy.cs" />
     <Compile Include="Model\BucketModel.cs" />
+    <Compile Include="Model\CompleteMultipartUploadModel.cs" />
     <Compile Include="Model\ErrorResult.cs" />
     <Compile Include="Model\InitiateMultipartUploadResultModel.cs" />
     <Compile Include="Model\IResponseHandler.cs" />
@@ -87,9 +88,10 @@
     <Compile Include="Model\ListBucketResult.cs" />
     <Compile Include="Model\ListBucketResultCommonPrefixes.cs" />
     <Compile Include="Model\ListBucketResultContents.cs" />
+    <Compile Include="Model\MultipartUploadPartModel.cs" />
     <Compile Include="Model\ResponseHandler.cs" />
     <Compile Include="MultipartUploadResult.cs" />
-    <Compile Include="MultiUploadObject.cs" />
+    <Compile Include="MultiUploadRequestData.cs" />
     <Compile Include="ObjectListing.cs" />
     <Compile Include="ObjectMetadata.cs" />
     <Compile Include="OssClientHelper.cs" />
@@ -120,6 +122,7 @@
     <Compile Include="Utilities\OssUtils.cs" />
     <Compile Include="Utilities\SignUtils.cs" />
     <Compile Include="Utilities\StringValueAttribute.cs" />
+    <Compile Include="XmlStreamSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="OssResources.resx">

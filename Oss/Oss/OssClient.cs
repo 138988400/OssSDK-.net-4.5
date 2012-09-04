@@ -460,7 +460,7 @@ namespace Oss
 
         }
 
-        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadObject multiUploadObject)
+        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject)
         {
             MultipartUploadResult result = null;
             try
@@ -494,6 +494,41 @@ namespace Oss
             return result;
 
         }
+
+        //public async Task<MultipartUploadResult> CompleteMultipartUpload(MultipartUploadPartModel multiUploadObjectPartMode)
+        //{
+        //    MultipartUploadResult result = null;
+        //    try
+        //    {
+        //        Dictionary<string, string> parameters = new Dictionary<string, string>();
+        //        parameters.Add("partNumber", multiUploadObject.PartNumber);
+        //        parameters.Add("uploaded", "UploadId");
+
+        //        OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
+
+        //        httpRequestMessage.Method = HttpMethod.Put;
+        //        httpRequestMessage.Headers.Date = DateTime.UtcNow;
+        //        httpRequestMessage.Content = new StreamContent(multiUploadObject.Content);
+
+        //        OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+        //        HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+        //        if (test.IsSuccessStatusCode == false)
+        //        {
+        //            ErrorResponseHandler handler = new ErrorResponseHandler();
+        //            handler.Handle(test);
+        //        }
+        //        var temp = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
+        //        result = temp.Deserialize(test);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //    }
+        //    return result;
+
+        //}
 
     }
 }

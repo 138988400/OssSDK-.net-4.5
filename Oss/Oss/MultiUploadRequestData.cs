@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oss
 {
-    public class MultiUploadObject
+    public class MultiUploadRequestData
     {
         public string Bucket { get; set; }
         public string Key { get; set; }

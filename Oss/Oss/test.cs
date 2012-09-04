@@ -170,7 +170,7 @@ namespace Oss
                 string result = await temp.MultipartUploadInitiate("devdoc", "c# 5.0.pdf");
 
                 FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\c# 5.0.pdf", FileMode.Open);
-                MultiUploadObject arg = new MultiUploadObject() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "1", UploadId = result };
+                MultiUploadRequestData arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "1", UploadId = result };
                 await temp.MultipartUpload(arg);
                 fs.Dispose();
             }
@@ -185,7 +185,24 @@ namespace Oss
         {
             try
             {
-                MultipartUploadInitiate();
+                XmlStreamSerializer<CompleteMultipartUploadModel> temp = new XmlStreamSerializer<CompleteMultipartUploadModel>();
+                CompleteMultipartUploadModel model = new CompleteMultipartUploadModel();
+
+                MultipartUploadPartModel[] data = new MultipartUploadPartModel[2];
+                data[0] = new MultipartUploadPartModel(1, "adasdsadasd");
+
+                data[1] = new MultipartUploadPartModel(2, "adasdsasadsadsadasddasd");
+                model.Parts = data;
+                //model.Parts.Add(new MultipartUploadPartModel(1, "adasdsadasd"));
+                //model.Parts.Add(new MultipartUploadPartModel(2, "adasdsasadsadsadasddasd"));
+               Stream result =  temp.Serialize(model);
+                byte [] buffer = new byte[result.Length];
+                result.Write(buffer, 0, buffer.Length);
+               FileStream tempStream = new FileStream("1.xml", FileMode.OpenOrCreate);
+               tempStream.Write(buffer, 0, buffer.Length);
+
+               tempStream.Close();
+             //   MultipartUploadInitiate();
               //  deleteObject();
                // getObject();
               //  listObjects();

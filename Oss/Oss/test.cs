@@ -131,13 +131,42 @@ namespace Oss
             }
         }
 
+        static async void getObjectMeta()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+               ObjectMetadata result = await temp.GetObjectMetadata("devdoc", "c# 5.0.pdf");
 
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
+
+        static void deleteObject()
+        {
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                temp.DeleteObject("devdoc", "c# 5.0.pdf");
+
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+            }
+        }
 
         static void Main(string[] args)
         {
             try
             {
-                getObject();
+                deleteObject();
+               // getObject();
               //  listObjects();
              //   list();
                // createBuket();

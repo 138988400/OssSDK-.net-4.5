@@ -319,6 +319,10 @@ namespace Oss
 
             try
             {
+                HttpClientHandler hand = new HttpClientHandler();
+                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
+                HttpClient localHttpClient = new HttpClient(processMessageHander);
+
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(getObjectRequest.BucketName, getObjectRequest.Key);
                 getObjectRequest.ResponseHeaders.Populate(httpRequestMessage.Headers);
                 getObjectRequest.Populate(httpRequestMessage.Headers);
@@ -327,7 +331,16 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                processMessageHander.HttpReceiveProgress += (sender, e) =>
+                {
+                    int num = e.ProgressPercentage;
+                    // Console.WriteLine(num);
+
+                };
+
+
+                HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
 
                 if (test.IsSuccessStatusCode == false)
                 {
@@ -344,6 +357,74 @@ namespace Oss
             }
 
             return result;   
+        }
+
+        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output)
+        {
+            OssObject ossObject = await this.GetObject(getObjectRequest);
+            using (ossObject.Content)
+            {
+                ossObject.Content.CopyTo(output);
+            }
+            return ossObject.Metadata;
+        }
+
+
+        public async  Task<ObjectMetadata> GetObjectMetadata(string bucketName, string key)
+        {
+            ObjectMetadata result = null;
+
+            try
+            {
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
+
+                httpRequestMessage.Method = HttpMethod.Head;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+
+                var temp = DeserializerFactory.GetFactory().CreateGetObjectMetadataResultDeserializer();
+                result = temp.Deserialize(test);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
+            
+        }
+
+        public async void DeleteObject(string bucketName, string key)
+        {
+            try
+            {
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
+
+                httpRequestMessage.Method = HttpMethod.Delete;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
     }

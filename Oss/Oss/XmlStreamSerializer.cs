@@ -10,10 +10,10 @@ namespace Oss
 {
     class XmlStreamSerializer<T>
     {
-       public  Stream Serialize(T model)
+        public Stream Serialize(T model)
         {
             MemoryStream stream = new MemoryStream();
-            
+
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             serializer.Serialize(stream, model);
 

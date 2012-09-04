@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Oss.Model
 {
@@ -18,8 +19,11 @@ namespace Oss.Model
            PartNumber = _PartNumber;
            ETag = _ETag;
        }
+
+        [XmlAttribute("PartNumber")]
         public UInt32 PartNumber { get; set; }
 
+        [XmlAttribute("ETag")]
         public string ETag { get; set; }
     }
 }

@@ -5,12 +5,6 @@ C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\bin\Debug\Oss.p
 C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.exe
 C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.pdb
 C:\Users\zhangting\Documents\Visual Studio 2012\Projects\Oss\Oss\obj\Debug\Oss.Resources.resources
-K:\github\oss\Oss\Oss\obj\Debug\Oss.exe
-K:\github\oss\Oss\Oss\obj\Debug\Oss.pdb
-K:\github\oss\Oss\Oss\bin\Debug\Oss.exe
-K:\github\oss\Oss\Oss\bin\Debug\Oss.pdb
-K:\github\oss\Oss\Oss\obj\Debug\Oss.csprojResolveAssemblyReference.cache
-K:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
 D:\github\oss\Oss\Oss\obj\Debug\Oss.exe
 D:\github\oss\Oss\Oss\obj\Debug\Oss.pdb
 D:\github\oss\Oss\Oss\bin\Debug\Oss.exe
@@ -34,7 +28,12 @@ C:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.dll
 C:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.xml
 C:\github\oss\Oss\Oss\bin\Debug\zh-Hans\System.Net.Http.Formatting.resources.dll
 K:\github\oss\Oss\Oss\bin\Debug\Oss.exe.config
+K:\github\oss\Oss\Oss\bin\Debug\Oss.exe
+K:\github\oss\Oss\Oss\bin\Debug\Oss.pdb
 K:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.dll
 K:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.xml
 K:\github\oss\Oss\Oss\bin\Debug\zh-Hans\System.Net.Http.Formatting.resources.dll
 K:\github\oss\Oss\Oss\obj\Debug\Oss.OssResources.resources
+K:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
+K:\github\oss\Oss\Oss\obj\Debug\Oss.exe
+K:\github\oss\Oss\Oss\obj\Debug\Oss.pdb

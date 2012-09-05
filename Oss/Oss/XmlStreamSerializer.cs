@@ -16,6 +16,7 @@ namespace Oss
 
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             serializer.Serialize(stream, model);
+            stream.Position = 0;
 
             return stream;
         }

@@ -62,6 +62,12 @@ namespace Oss.Deserial
             return new MultipartUploadDeserializer();
         }
 
+        public IDeserializer<HttpResponseMessage, Task<CompleteMultipartUploadResult>> CreateCompMultiUploadDeserializer()
+        {
+            return new CompleteMultipartUploadResultDeserializer(this.CreateContentDeserializer<CompleteMultipartUploadResult>());
+        }
+
+
         //public static DeserializerFactory GetFactory()
         //{
         //    return GetFactory(null);

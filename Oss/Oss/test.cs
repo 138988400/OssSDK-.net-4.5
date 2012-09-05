@@ -1,4 +1,5 @@
-﻿using Oss.Model;
+﻿using Oss.Deserial;
+using Oss.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -164,6 +165,23 @@ namespace Oss
             }
         }
 
+        static int ReadChunk(Stream stream, byte[] chunk)
+        {
+            int index = 0;
+            while (index < chunk.Length)
+            {
+                int bytesRead = stream.Read(chunk, index, chunk.Length - index);
+                if (bytesRead == 0)
+                {
+                    break;
+                }
+                index += bytesRead;
+            }
+            return index;
+        }
+
+
+
         static async void MultipartUploadInitiate()
         {
             try
@@ -172,9 +190,45 @@ namespace Oss
                 string result = await temp.MultipartUploadInitiate("devdoc", "c# 5.0.pdf");
 
                 FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\c# 5.0.pdf", FileMode.Open);
-                MultiUploadRequestData arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "1", UploadId = result };
-                await temp.MultipartUpload(arg);
-                fs.Dispose();
+
+                byte[] buffer = new byte[6291456];
+
+                ReadChunk(fs, buffer);
+
+                MemoryStream ms = new MemoryStream(buffer);
+
+                MultiUploadRequestData arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = ms, PartNumber = "1", UploadId = result };
+                MultipartUploadResult result1 = await temp.MultipartUpload(arg);
+
+                fs.Position = 6291456;
+                arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "2", UploadId = result };
+                MultipartUploadResult result2  = await temp.MultipartUpload(arg);
+
+                CompleteMultipartUploadModel model = new CompleteMultipartUploadModel();
+
+                model.Parts = new List<MultipartUploadPartModel>();
+                model.Parts.Add(new MultipartUploadPartModel(1, result1.ETag));
+                model.Parts.Add(new MultipartUploadPartModel(2, result2.ETag));
+                model.Bucket = "devdoc";
+                model.Key = "c# 5.0.pdf";
+                model.UploadId = result;
+
+                XmlSerializer serializer = new XmlSerializer(typeof(CompleteMultipartUploadModel));
+                XmlWriterSettings writerSettings = new XmlWriterSettings();
+                writerSettings.OmitXmlDeclaration = true;
+                StringWriter stringWriter = new StringWriter();
+                using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter,
+                writerSettings))
+                {
+                    serializer.Serialize(xmlWriter, model);
+                }
+                string test = stringWriter.ToString();
+
+
+                temp.CompleteMultipartUpload(model);
+
+              //  fs.Dispose();
+
             }
             catch (AggregateException ex)
             {
@@ -191,31 +245,12 @@ namespace Oss
 
 
 
-                //XmlWriterSettings writerSettings = new XmlWriterSettings();
-                //writerSettings.OmitXmlDeclaration = true;
-                //StringWriter stringWriter = new StringWriter();
-                //using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter,
-                //writerSettings))
-                //{
-                //    serializer.Serialize(xmlWriter, request);
-                //}
-                //textXml.Text = stringWriter.ToString();
 
 
-               
-                CompleteMultipartUploadModel model = new CompleteMultipartUploadModel();
 
-                model.Parts = new List<MultipartUploadPartModel>();
-                model.Parts.Add(new MultipartUploadPartModel(1, "adasdsadasd"));
-                model.Parts.Add(new MultipartUploadPartModel(2, "adasdsasadsadsadasddasd"));
-                model.Bucket = "mydoc";
-                model.Key = "2";
-                model.UploadId = "asdas";
-                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                temp.CompleteMultipartUpload(model);
 
-             //   MultipartUploadInitiate();
-              //  deleteObject();
+                MultipartUploadInitiate();
+               // deleteObject();
                // getObject();
               //  listObjects();
              //   list();

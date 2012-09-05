@@ -57,6 +57,7 @@
     <Compile Include="Commands\OssCommand.cs" />
     <Compile Include="Commands\OssCommandT.cs" />
     <Compile Include="Commands\PutObjectCommand.cs" />
+    <Compile Include="Deserial\CompleteMultipartUploadResultDeserializer.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
     <Compile Include="Deserial\GetAclResponseParser.cs" />
     <Compile Include="Deserial\GetObjectMetadataResponseDeserializer.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Model\AccessControlPolicy.cs" />
     <Compile Include="Model\BucketModel.cs" />
     <Compile Include="Model\CompleteMultipartUploadModel.cs" />
+    <Compile Include="Model\CompleteMultipartUploadResult.cs" />
     <Compile Include="Model\ErrorResult.cs" />
     <Compile Include="Model\InitiateMultipartUploadResultModel.cs" />
     <Compile Include="Model\IResponseHandler.cs" />
@@ -128,6 +130,7 @@
     <EmbeddedResource Include="OssResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OssResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

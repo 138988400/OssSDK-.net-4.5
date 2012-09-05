@@ -20,10 +20,8 @@ namespace Oss.Model
            ETag = _ETag;
        }
 
-        [XmlAttribute("PartNumber")]
         public UInt32 PartNumber { get; set; }
 
-        [XmlAttribute("ETag")]
         public string ETag { get; set; }
     }
 }

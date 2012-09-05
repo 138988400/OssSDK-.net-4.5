@@ -537,5 +537,104 @@ namespace Oss
 
         }
 
+
+        public async void DeleteMultipartUpload(MultiUploadRequestData multiUploadObject)
+        {
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("partNumber", multiUploadObject.PartNumber);
+                parameters.Add("uploadId", multiUploadObject.UploadId);
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Delete;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<ListPartsResult> ListMultiUploadParts(string buketName, string key, string uploadId)
+        {
+            ListPartsResult result = null;
+            try
+            {
+
+
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("uploadId", uploadId);
+
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(buketName, key, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+                var temp = DeserializerFactory.GetFactory().CreateListPartsDeserialzer();
+                result = await temp.Deserialize(test);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+
+        }
+
+        public async Task<ListMultipartUploadsResult> ListMultipartUploads(string bucketName)
+        {
+            ListMultipartUploadsResult result = null;
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("uploads", null);
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Get;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+                var temp = DeserializerFactory.GetFactory().CreateListMultipartUploadsDeserializer();
+                result = await temp.Deserialize(test);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return result;
+
+        }
+
     }
 }

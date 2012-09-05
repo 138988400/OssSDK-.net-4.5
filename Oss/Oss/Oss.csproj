@@ -65,6 +65,8 @@
     <Compile Include="Deserial\IDeserializer.cs" />
     <Compile Include="Deserial\InitiateMultipartUploadDeserializer.cs" />
     <Compile Include="Deserial\ListBucketResultDeserializer.cs" />
+    <Compile Include="Deserial\ListPartsDeserialzer.cs" />
+    <Compile Include="Deserial\ListMultipartUploadsDeserializer.cs" />
     <Compile Include="Deserial\ListObjectsResponseDeserializer.cs" />
     <Compile Include="Deserial\MultipartUploadDeserializer.cs" />
     <Compile Include="Deserial\PutObjectResponseDeserializer.cs" />
@@ -90,6 +92,10 @@
     <Compile Include="Model\ListBucketResult.cs" />
     <Compile Include="Model\ListBucketResultCommonPrefixes.cs" />
     <Compile Include="Model\ListBucketResultContents.cs" />
+    <Compile Include="Model\ListMultiPartUploadModle.cs" />
+    <Compile Include="Model\ListMultipartUploadsResult.cs" />
+    <Compile Include="Model\ListPartModel.cs" />
+    <Compile Include="Model\ListPartsResult.cs" />
     <Compile Include="Model\MultipartUploadPartModel.cs" />
     <Compile Include="Model\ResponseHandler.cs" />
     <Compile Include="MultipartUploadResult.cs" />

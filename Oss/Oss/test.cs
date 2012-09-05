@@ -200,32 +200,28 @@ namespace Oss
                 MultiUploadRequestData arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = ms, PartNumber = "1", UploadId = result };
                 MultipartUploadResult result1 = await temp.MultipartUpload(arg);
 
-                fs.Position = 6291456;
-                arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "2", UploadId = result };
-                MultipartUploadResult result2  = await temp.MultipartUpload(arg);
+               ListMultipartUploadsResult  listMultipart  = await temp.ListMultipartUploads("devdoc");
 
-                CompleteMultipartUploadModel model = new CompleteMultipartUploadModel();
+              //  temp.DeleteMultipartUpload(arg);
 
-                model.Parts = new List<MultipartUploadPartModel>();
-                model.Parts.Add(new MultipartUploadPartModel(1, result1.ETag));
-                model.Parts.Add(new MultipartUploadPartModel(2, result2.ETag));
-                model.Bucket = "devdoc";
-                model.Key = "c# 5.0.pdf";
-                model.UploadId = result;
+                //fs.Position = 6291456;
+                //arg = new MultiUploadRequestData() { Bucket = "devdoc", Key = "c# 5.0.pdf", Content = fs, PartNumber = "2", UploadId = result };
+                //MultipartUploadResult result2 = await temp.MultipartUpload(arg);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(CompleteMultipartUploadModel));
-                XmlWriterSettings writerSettings = new XmlWriterSettings();
-                writerSettings.OmitXmlDeclaration = true;
-                StringWriter stringWriter = new StringWriter();
-                using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter,
-                writerSettings))
-                {
-                    serializer.Serialize(xmlWriter, model);
-                }
-                string test = stringWriter.ToString();
+                //ListPartsResult parts = await temp.ListMultiUploadParts("devdoc", "c# 5.0.pdf", result);
 
 
-                temp.CompleteMultipartUpload(model);
+                //CompleteMultipartUploadModel model = new CompleteMultipartUploadModel();
+
+                //model.Parts = new List<MultipartUploadPartModel>();
+                //model.Parts.Add(new MultipartUploadPartModel(1, result1.ETag));
+                //model.Parts.Add(new MultipartUploadPartModel(2, result2.ETag));
+                //model.Bucket = "devdoc";
+                //model.Key = "c# 5.0.pdf";
+                //model.UploadId = result;
+
+
+                //temp.CompleteMultipartUpload(model);
 
               //  fs.Dispose();
 

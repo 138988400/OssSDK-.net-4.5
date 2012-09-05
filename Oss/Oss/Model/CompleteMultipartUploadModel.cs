@@ -13,7 +13,18 @@ namespace Oss.Model
     [XmlRoot("CompleteMultipartUpload", Namespace = "", IsNullable = false), XmlType(AnonymousType = true), GeneratedCode("xsd", "4.0.30319.1"), DebuggerStepThrough, DesignerCategory("code")]
     public class CompleteMultipartUploadModel
     {
+        public CompleteMultipartUploadModel()
+        {
+            Parts = new List<MultipartUploadPartModel>();
+        }
         [XmlElement("Part")]
-        public MultipartUploadPartModel[] Parts { get; set; }
+        public List<MultipartUploadPartModel> Parts { get; set; }
+
+        [XmlIgnoreAttribute]
+        public string Bucket { get; set; }
+        [XmlIgnoreAttribute]
+        public string Key { get; set; }
+        [XmlIgnoreAttribute]
+        public string UploadId { get; set; }
     }
 }

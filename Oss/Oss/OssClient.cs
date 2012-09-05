@@ -467,7 +467,7 @@ namespace Oss
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("partNumber", multiUploadObject.PartNumber);
-                parameters.Add("uploaded", "UploadId");
+                parameters.Add("uploaded", multiUploadObject.UploadId);
 
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
 
@@ -495,40 +495,52 @@ namespace Oss
 
         }
 
-        //public async Task<MultipartUploadResult> CompleteMultipartUpload(MultipartUploadPartModel multiUploadObjectPartMode)
-        //{
-        //    MultipartUploadResult result = null;
-        //    try
-        //    {
-        //        Dictionary<string, string> parameters = new Dictionary<string, string>();
-        //        parameters.Add("partNumber", multiUploadObject.PartNumber);
-        //        parameters.Add("uploaded", "UploadId");
+        public async void CompleteMultipartUpload(CompleteMultipartUploadModel completeMultipartUploadModel)
+        {
 
-        //        OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
 
-        //        httpRequestMessage.Method = HttpMethod.Put;
-        //        httpRequestMessage.Headers.Date = DateTime.UtcNow;
-        //        httpRequestMessage.Content = new StreamContent(multiUploadObject.Content);
 
-        //        OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-        //        HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
 
-        //        if (test.IsSuccessStatusCode == false)
-        //        {
-        //            ErrorResponseHandler handler = new ErrorResponseHandler();
-        //            handler.Handle(test);
-        //        }
-        //        var temp = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
-        //        result = temp.Deserialize(test);
+            MultipartUploadResult result = null;
+            try
+            {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("uploaded", completeMultipartUploadModel.UploadId);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-        //    return result;
 
-        //}
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(completeMultipartUploadModel.Bucket, completeMultipartUploadModel.Key, parameters);
+
+                httpRequestMessage.Method = HttpMethod.Post;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+
+                FileStream tempStream = new FileStream("1.xml", FileMode.OpenOrCreate);
+                XmlSerializer serializer = new XmlSerializer(typeof(CompleteMultipartUploadModel));
+                serializer.Serialize(tempStream, completeMultipartUploadModel);
+                tempStream.Close();
+                FileStream tempStream2 = new FileStream("1.xml", FileMode.OpenOrCreate);
+
+
+                httpRequestMessage.Content = new StreamContent(tempStream2);
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    ErrorResponseHandler handler = new ErrorResponseHandler();
+                    handler.Handle(test);
+                }
+                //var temp = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
+                //result = temp.Deserialize(test);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            //return result;
+
+        }
 
     }
 }

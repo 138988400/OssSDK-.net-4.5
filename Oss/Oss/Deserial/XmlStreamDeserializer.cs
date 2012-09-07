@@ -13,12 +13,12 @@ namespace Oss.Deserial
     {
         public T Deserialize(Stream xml)
         {
-            T temp;
-            Stream temp2 = xml;
+            T model;
+            Stream xmlStream = xml;
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
-                temp = (T)serializer.Deserialize(xml);
+                model = (T)serializer.Deserialize(xml);
             }
             catch (XmlException ex)
             {
@@ -30,12 +30,12 @@ namespace Oss.Deserial
             }
             finally
             {
-                if (temp2 != null)
+                if (xmlStream != null)
                 {
-                    temp2.Dispose();
+                    xmlStream.Dispose();
                 }
             }
-            return temp;
+            return model;
         }
     }
 }

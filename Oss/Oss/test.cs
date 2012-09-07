@@ -62,12 +62,12 @@ namespace Oss
             }
         }
 
-        static void setBuketAcl()
+        static async void setBuketAcl()
         {
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                temp.SetBucketAcl("mydoc4", CannedAccessControlList.PublicRead);
+                await temp.SetBucketAcl("mydoc4", CannedAccessControlList.PublicRead);
 
             }
             catch (AggregateException ex)
@@ -77,12 +77,12 @@ namespace Oss
             }
         }
 
-        static void deleteBuket()
+        static async void deleteBuket()
         {
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                temp.DeleteBucket("mydoc5");
+                await temp.DeleteBucket("mydoc5");
 
             }
             catch (AggregateException ex)
@@ -150,12 +150,12 @@ namespace Oss
             }
         }
 
-        static  void deleteObject()
+        static  async void deleteObject()
         {
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                temp.DeleteObject("devdoc", "c# 5.0.pdf");
+                await temp.DeleteObject("devdoc", "c# 5.0.pdf");
 
             }
             catch (AggregateException ex)

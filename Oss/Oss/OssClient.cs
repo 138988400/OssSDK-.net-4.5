@@ -69,7 +69,7 @@ namespace Oss
             return new Bucket(bucketName);
         }
 
-        public async void DeleteBucket(string bucketName)
+        public async Task DeleteBucket(string bucketName)
         {
             try
             {
@@ -241,7 +241,7 @@ namespace Oss
         }
 
 
-        public async void SetBucketAcl(string bucketName, CannedAccessControlList acl)
+        public async Task SetBucketAcl(string bucketName, CannedAccessControlList acl)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("acl", null);
@@ -402,7 +402,7 @@ namespace Oss
             
         }
 
-        public async void DeleteObject(string bucketName, string key)
+        public async Task DeleteObject(string bucketName, string key)
         {
             try
             {
@@ -538,7 +538,7 @@ namespace Oss
         }
 
 
-        public async void DeleteMultipartUpload(MultiUploadRequestData multiUploadObject)
+        public async Task DeleteMultipartUpload(MultiUploadRequestData multiUploadObject)
         {
             try
             {
@@ -626,7 +626,6 @@ namespace Oss
                 }
                 var temp = DeserializerFactory.GetFactory().CreateListMultipartUploadsDeserializer();
                 result = await temp.Deserialize(test);
-
             }
             catch (Exception ex)
             {

@@ -52,11 +52,6 @@
     <Compile Include="AccessControlList.cs" />
     <Compile Include="Bucket.cs" />
     <Compile Include="CannedAccessControlList.cs" />
-    <Compile Include="Commands\CreateBucketCommand.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\OssCommand.cs" />
-    <Compile Include="Commands\OssCommandT.cs" />
-    <Compile Include="Commands\PutObjectCommand.cs" />
     <Compile Include="Deserial\CompleteMultipartUploadResultDeserializer.cs" />
     <Compile Include="Deserial\DeserializerFactory.cs" />
     <Compile Include="Deserial\GetAclResponseParser.cs" />
@@ -79,6 +74,7 @@
     <Compile Include="Grant.cs" />
     <Compile Include="GroupGrantee.cs" />
     <Compile Include="HmacSHA1Signature.cs" />
+    <Compile Include="HttpProcessData.cs" />
     <Compile Include="IGrantee.cs" />
     <Compile Include="ListObjectsRequest.cs" />
     <Compile Include="Model\AccessControlPolicy.cs" />

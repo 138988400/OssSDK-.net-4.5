@@ -10,11 +10,10 @@ using System.Xml;
 
 namespace Oss.Utilities
 {
-    internal class ErrorResponseHandler : ResponseHandler
+    internal  class ErrorResponseHandler 
     {
-        public override async void Handle(HttpResponseMessage response)
+        static public async Task Handle(HttpResponseMessage response)
         {
-            base.Handle(response);
             if (!response.IsSuccessStatusCode)
             {
                 ErrorResult errorResult = null;
@@ -24,12 +23,14 @@ namespace Oss.Utilities
 
                     errorResult = await d.Deserialize(response);
                 }
-                catch (XmlException)
+                catch (XmlException ex)
                 {
+                    throw ex;
                     //response.EnsureSuccessful();
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException invalidEx)
                 {
+                    throw invalidEx;
                     //response.EnsureSuccessful();
                 }
                 throw ExceptionFactory.CreateException(errorResult.Code, errorResult.Message, errorResult.RequestId, errorResult.HostId);

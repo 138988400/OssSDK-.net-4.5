@@ -37,3 +37,4 @@ K:\github\oss\Oss\Oss\obj\Debug\Oss.OssResources.resources
 K:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
 K:\github\oss\Oss\Oss\obj\Debug\Oss.exe
 K:\github\oss\Oss\Oss\obj\Debug\Oss.pdb
+K:\github\oss\Oss\Oss\obj\Debug\Oss.csprojResolveAssemblyReference.cache

@@ -1,5 +1,4 @@
-﻿using Oss.Commands;
-using Oss.Deserial;
+﻿using Oss.Deserial;
 using Oss.Model;
 using Oss.Utilities;
 using System;
@@ -57,14 +56,22 @@ namespace Oss
         public async Task<Bucket> CreateBucket(string bucketName)
         {
             try{
-                      
 
-            bool result = await CreateBucketCommand.Create(httpClient, bucketName, networkCredential).Execute();
+                OssHttpRequestMessage ossHttpRequestMessage = new OssHttpRequestMessage(bucketName, null);
+
+                ossHttpRequestMessage.Method = HttpMethod.Put;
+                ossHttpRequestMessage.Headers.Date = DateTime.UtcNow;
+                OssRequestSigner.Sign(ossHttpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(ossHttpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    await ErrorResponseHandler.Handle(test);
+                }
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-
+                throw ex;
             }
             return new Bucket(bucketName);
         }
@@ -83,13 +90,12 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
 
         }
@@ -99,10 +105,6 @@ namespace Oss
             IEnumerable<Bucket> result = null;
             try
             {
-                HttpClientHandler hand = new HttpClientHandler();
-                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
-                HttpClient localHttpClient = new HttpClient(processMessageHander);
-
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(null, null);
 
                 httpRequestMessage.Method = HttpMethod.Get;
@@ -111,42 +113,27 @@ namespace Oss
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
 
 
-                processMessageHander.HttpSendProgress += (sender, e) =>
-                    {
-                        int num = e.ProgressPercentage;
-                     //   Console.WriteLine(num);
-
-                    };
-                processMessageHander.HttpReceiveProgress += (sender, e) =>
-                {
-                    int num = e.ProgressPercentage;
-                   // Console.WriteLine(num);
-
-                };
-
-                HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateListBucketResultDeserializer();
                 result = await temp.Deserialize(test);
-                localHttpClient.Dispose();
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
 
             return result;
 
         }
 
-        public async Task <PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata)
+        public async Task <PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata, Action<HttpProcessData> uploadProcessCallback)
         {
             PutObjectResult result = null;
             try
@@ -154,7 +141,8 @@ namespace Oss
                 HttpClientHandler hand = new HttpClientHandler();
                 ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
                 HttpClient localHttpClient = new HttpClient(processMessageHander);
-
+                localHttpClient.Timeout += new TimeSpan(TimeSpan.TicksPerHour); 
+                TimeSpan t = localHttpClient.Timeout;
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
 
 
@@ -166,7 +154,6 @@ namespace Oss
 
                 OssClientHelper.initialHttpRequestMessage(httpRequestMessage, metadata);
 
-               
                 
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
@@ -174,33 +161,30 @@ namespace Oss
 
                 processMessageHander.HttpSendProgress += (sender, e) =>
                 {
-                    int num = e.ProgressPercentage;
-                    //   Console.WriteLine(num);
+                    uploadProcessCallback(new HttpProcessData()
+                    {
+                        TotalBytes = e.TotalBytes,
+                        BytesTransferred = e.BytesTransferred,
+                        ProgressPercentage = e.ProgressPercentage
+                    });
 
                 };
-                processMessageHander.HttpReceiveProgress += (sender, e) =>
-                {
-                    int num = e.ProgressPercentage;
-                    // Console.WriteLine(num);
-
-                };
-
+ 
                 HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreatePutObjectReusltDeserializer();
                 result = temp.Deserialize(test);
-                localHttpClient.Dispose();
+                //localHttpClient.Dispose();
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
 
             return result;
@@ -224,15 +208,14 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateGetAclResultDeserializer();
                 result = await temp.Deserialize(test);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
 
             return result;
@@ -243,21 +226,27 @@ namespace Oss
 
         public async Task SetBucketAcl(string bucketName, CannedAccessControlList acl)
         {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("acl", null);
-            OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null,parameters);
-
-            httpRequestMessage.Method = HttpMethod.Put;
-            httpRequestMessage.Headers.Date = DateTime.UtcNow;
-            httpRequestMessage.Headers.Add("x-oss-acl", acl.GetStringValue());
-            OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-            HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
-
-            if (test.IsSuccessStatusCode == false)
+            try
             {
-                ErrorResponseHandler handler = new ErrorResponseHandler();
-                handler.Handle(test);
-            }        
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("acl", null);
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null,parameters);
+
+                httpRequestMessage.Method = HttpMethod.Put;
+                httpRequestMessage.Headers.Date = DateTime.UtcNow;
+                httpRequestMessage.Headers.Add("x-oss-acl", acl.GetStringValue());
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+
+                if (test.IsSuccessStatusCode == false)
+                {
+                    await ErrorResponseHandler.Handle(test);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -293,8 +282,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateListObjectsResultDeserializer();
@@ -302,17 +290,17 @@ namespace Oss
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             return result;
         }
 
-        public async Task<OssObject> GetObject(string bucketName, string key)
+        public async Task<OssObject> GetObject(string bucketName, string key, Action<HttpProcessData> downloadProcessCallback)
         {
-            return await  this.GetObject(new GetObjectRequest(bucketName, key));
+            return await this.GetObject(new GetObjectRequest(bucketName, key), downloadProcessCallback);
         }
 
-        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest)
+        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest, Action<HttpProcessData> downloadProcessCallback)
         {
 
             OssObject result = null;
@@ -322,7 +310,7 @@ namespace Oss
                 HttpClientHandler hand = new HttpClientHandler();
                 ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
                 HttpClient localHttpClient = new HttpClient(processMessageHander);
-
+               TimeSpan t = localHttpClient.Timeout;
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(getObjectRequest.BucketName, getObjectRequest.Key);
                 getObjectRequest.ResponseHeaders.Populate(httpRequestMessage.Headers);
                 getObjectRequest.Populate(httpRequestMessage.Headers);
@@ -334,8 +322,12 @@ namespace Oss
 
                 processMessageHander.HttpReceiveProgress += (sender, e) =>
                 {
-                    int num = e.ProgressPercentage;
-                    // Console.WriteLine(num);
+                    downloadProcessCallback(new HttpProcessData()
+                    {
+                        TotalBytes = e.TotalBytes,
+                        BytesTransferred = e.BytesTransferred,
+                        ProgressPercentage = e.ProgressPercentage
+                    }); ;
 
                 };
 
@@ -344,8 +336,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateGetObjectResultDeserializer(getObjectRequest);
@@ -353,15 +344,15 @@ namespace Oss
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
 
             return result;   
         }
 
-        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output)
+        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output, Action<HttpProcessData> downloadProcessCallback)
         {
-            OssObject ossObject = await this.GetObject(getObjectRequest);
+            OssObject ossObject = await this.GetObject(getObjectRequest, downloadProcessCallback);
             using (ossObject.Content)
             {
                 ossObject.Content.CopyTo(output);
@@ -387,8 +378,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateGetObjectMetadataResultDeserializer();
@@ -396,7 +386,7 @@ namespace Oss
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             return result;
             
@@ -416,13 +406,12 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
 
         }
@@ -445,8 +434,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateInitiateMultipartUploadDeserializer();
                 result = await temp.Deserialize(test);
@@ -454,7 +442,7 @@ namespace Oss
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
             return result;
 
@@ -480,8 +468,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
                 result = temp.Deserialize(test);
@@ -489,7 +476,7 @@ namespace Oss
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
             return result;
 
@@ -522,8 +509,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateCompMultiUploadDeserializer();
                 result = await temp.Deserialize(test);
@@ -531,7 +517,7 @@ namespace Oss
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
             return result;
 
@@ -556,8 +542,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
             }
             catch (Exception ex)
@@ -588,8 +573,7 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateListPartsDeserialzer();
                 result = await temp.Deserialize(test);
@@ -621,15 +605,14 @@ namespace Oss
 
                 if (test.IsSuccessStatusCode == false)
                 {
-                    ErrorResponseHandler handler = new ErrorResponseHandler();
-                    handler.Handle(test);
+                    await ErrorResponseHandler.Handle(test);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateListMultipartUploadsDeserializer();
                 result = await temp.Deserialize(test);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
             return result;
 

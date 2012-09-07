@@ -15,12 +15,20 @@ namespace Oss
 {
     class test
     {
+        static void callback(HttpProcessData processPercent)
+        {
+            int i = processPercent.BytesTransferred;
+
+        }
+
+
+
         static async void PutObject()
         {
             OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-            FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\c# 5.0.pdf", FileMode.Open);
+            FileStream fs = new FileStream(@"E:\电子书\代码大全.pdf", FileMode.Open);
             ObjectMetadata oMetaData= new ObjectMetadata();
-            await temp.PutObject("devdoc", "c# 5.0.pdf", fs, oMetaData);
+            await temp.PutObject("devdoc", "代码大全.pdf", fs, oMetaData, callback);
             fs.Dispose();
         }
 
@@ -32,15 +40,15 @@ namespace Oss
         }
 
 
-        static void createBuket()
+        static async void createBuket()
         {
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                Task<Bucket> test = temp.CreateBucket("mydoc10");
+                Bucket test = await temp.CreateBucket("1");
 
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
 
@@ -82,10 +90,10 @@ namespace Oss
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                await temp.DeleteBucket("mydoc5");
+                await temp.DeleteBucket("mydoc12");
 
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
 
@@ -115,7 +123,7 @@ namespace Oss
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                OssObject result = await temp.GetObject("devdoc", "c# 5.0.pdf");
+                OssObject result = await temp.GetObject("devdoc", "c# 5.0.pdf", callback);
 
                 
 
@@ -245,15 +253,15 @@ namespace Oss
 
 
 
-                MultipartUploadInitiate();
+               // MultipartUploadInitiate();
                // deleteObject();
-               // getObject();
+                getObject();
               //  listObjects();
              //   list();
-               // createBuket();
-                //PutObject();
+                //createBuket();
+              //  PutObject();
                // getBuketAcl();
-                //deleteBuket();
+            //    deleteBuket();
                // setBuketAcl();
                // getBuketAcl();
                 // OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");

@@ -62,11 +62,11 @@ namespace Oss
                 ossHttpRequestMessage.Method = HttpMethod.Put;
                 ossHttpRequestMessage.Headers.Date = DateTime.UtcNow;
                 OssRequestSigner.Sign(ossHttpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(ossHttpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(ossHttpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
             }
             catch (Exception ex)
@@ -86,11 +86,11 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
             }
             catch (Exception ex)
@@ -113,15 +113,15 @@ namespace Oss
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
 
 
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateListBucketResultDeserializer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
 
             }
             catch (Exception ex)
@@ -141,8 +141,7 @@ namespace Oss
                 HttpClientHandler hand = new HttpClientHandler();
                 ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
                 HttpClient localHttpClient = new HttpClient(processMessageHander);
-                localHttpClient.Timeout += new TimeSpan(TimeSpan.TicksPerHour); 
-                TimeSpan t = localHttpClient.Timeout;
+                localHttpClient.Timeout += new TimeSpan(2 * TimeSpan.TicksPerHour); 
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
 
 
@@ -170,15 +169,15 @@ namespace Oss
 
                 };
  
-                HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await localHttpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreatePutObjectReusltDeserializer();
-                result = temp.Deserialize(test);
+                result = temp.Deserialize(response);
                 //localHttpClient.Dispose();
 
             }
@@ -204,14 +203,14 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateGetAclResultDeserializer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
             }
             catch (Exception ex)
             {
@@ -236,11 +235,11 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
                 httpRequestMessage.Headers.Add("x-oss-acl", acl.GetStringValue());
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
             }
             catch (Exception ex)
@@ -278,15 +277,15 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateListObjectsResultDeserializer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
             }
             catch (Exception ex)
             {
@@ -310,7 +309,8 @@ namespace Oss
                 HttpClientHandler hand = new HttpClientHandler();
                 ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
                 HttpClient localHttpClient = new HttpClient(processMessageHander);
-               TimeSpan t = localHttpClient.Timeout;
+                localHttpClient.Timeout += new TimeSpan(2 * TimeSpan.TicksPerHour); 
+
                 OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(getObjectRequest.BucketName, getObjectRequest.Key);
                 getObjectRequest.ResponseHeaders.Populate(httpRequestMessage.Headers);
                 getObjectRequest.Populate(httpRequestMessage.Headers);
@@ -332,15 +332,15 @@ namespace Oss
                 };
 
 
-                HttpResponseMessage test = await localHttpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await localHttpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateGetObjectResultDeserializer(getObjectRequest);
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
             }
             catch (Exception ex)
             {
@@ -374,15 +374,15 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
 
                 var temp = DeserializerFactory.GetFactory().CreateGetObjectMetadataResultDeserializer();
-                result = temp.Deserialize(test);
+                result = temp.Deserialize(response);
             }
             catch (Exception ex)
             {
@@ -402,11 +402,11 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
             }
             catch (Exception ex)
@@ -430,14 +430,14 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateInitiateMultipartUploadDeserializer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
 
             }
             catch (Exception ex)
@@ -448,11 +448,16 @@ namespace Oss
 
         }
 
-        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject)
+        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject, Action<HttpProcessData> uploadProcessCallback)
         {
             MultipartUploadResult result = null;
             try
             {
+                HttpClientHandler hand = new HttpClientHandler();
+                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
+                HttpClient localHttpClient = new HttpClient(processMessageHander);
+                localHttpClient.Timeout += new TimeSpan(2 * TimeSpan.TicksPerHour); 
+
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("partNumber", multiUploadObject.PartNumber);
                 parameters.Add("uploadId", multiUploadObject.UploadId);
@@ -463,15 +468,27 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
                 httpRequestMessage.Content = new StreamContent(multiUploadObject.Content);
 
-                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
-
-                if (test.IsSuccessStatusCode == false)
+                processMessageHander.HttpSendProgress += (sender, e) =>
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    uploadProcessCallback(new HttpProcessData()
+                    {
+                        TotalBytes = e.TotalBytes,
+                        BytesTransferred = e.BytesTransferred,
+                        ProgressPercentage = e.ProgressPercentage
+                    });
+
+                };
+
+
+                OssRequestSigner.Sign(httpRequestMessage, networkCredential);
+                HttpResponseMessage resonse = await localHttpClient.SendAsync(httpRequestMessage);
+
+                if (resonse.IsSuccessStatusCode == false)
+                {
+                    await ErrorResponseHandler.Handle(resonse);
                 }
-                var temp = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
-                result = temp.Deserialize(test);
+                var deseserializer = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
+                result = deseserializer.Deserialize(resonse);
 
             }
             catch (Exception ex)
@@ -505,14 +522,14 @@ namespace Oss
                 httpRequestMessage.Content = new StreamContent(serializer.Serialize(completeMultipartUploadModel));
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateCompMultiUploadDeserializer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
 
             }
             catch (Exception ex)
@@ -538,11 +555,11 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
             }
             catch (Exception ex)
@@ -569,14 +586,14 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateListPartsDeserialzer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
 
             }
             catch (Exception ex)
@@ -601,14 +618,14 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage test = await httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
 
-                if (test.IsSuccessStatusCode == false)
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(test);
+                    await ErrorResponseHandler.Handle(response);
                 }
                 var temp = DeserializerFactory.GetFactory().CreateListMultipartUploadsDeserializer();
-                result = await temp.Deserialize(test);
+                result = await temp.Deserialize(response);
             }
             catch (Exception ex)
             {

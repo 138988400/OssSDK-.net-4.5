@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Handlers;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -133,7 +134,8 @@ namespace Oss
 
         }
 
-        public async Task <PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata, Action<HttpProcessData> uploadProcessCallback = null)
+        public async Task<PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata, 
+            Action<HttpProcessData> uploadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
             PutObjectResult result = null;
             try
@@ -170,8 +172,12 @@ namespace Oss
 
                     };
                 }
- 
-                HttpResponseMessage response = await localHttpClient.SendAsync(httpRequestMessage);
+
+                HttpResponseMessage response;
+                if(cancellationToken != null)
+                    response = await localHttpClient.SendAsync(httpRequestMessage, (CancellationToken)cancellationToken);
+                else
+                     response = await localHttpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -296,12 +302,14 @@ namespace Oss
             return result;
         }
 
-        public async Task<OssObject> GetObject(string bucketName, string key, Action<HttpProcessData> downloadProcessCallback = null)
+        public async Task<OssObject> GetObject(string bucketName, string key, 
+            Action<HttpProcessData> downloadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
-            return await this.GetObject(new GetObjectRequest(bucketName, key), downloadProcessCallback);
+            return await this.GetObject(new GetObjectRequest(bucketName, key), downloadProcessCallback, cancellationToken);
         }
 
-        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest, Action<HttpProcessData> downloadProcessCallback = null)
+        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest,
+            Action<HttpProcessData> downloadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
 
             OssObject result = null;
@@ -335,8 +343,12 @@ namespace Oss
                     };
                 }
 
+                HttpResponseMessage response;
+                if (cancellationToken != null)
+                    response = await localHttpClient.SendAsync(httpRequestMessage, (CancellationToken)cancellationToken);
+                else
+                    response = await localHttpClient.SendAsync(httpRequestMessage);
 
-                HttpResponseMessage response = await localHttpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -354,9 +366,10 @@ namespace Oss
             return result;   
         }
 
-        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output, Action<HttpProcessData> downloadProcessCallback = null)
+        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output,
+            Action<HttpProcessData> downloadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
-            OssObject ossObject = await this.GetObject(getObjectRequest, downloadProcessCallback);
+            OssObject ossObject = await this.GetObject(getObjectRequest, downloadProcessCallback, cancellationToken);
             using (ossObject.Content)
             {
                 ossObject.Content.CopyTo(output);
@@ -452,7 +465,8 @@ namespace Oss
 
         }
 
-        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject, Action<HttpProcessData> uploadProcessCallback = null)
+        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject,
+            Action<HttpProcessData> uploadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
             MultipartUploadResult result = null;
             try
@@ -488,14 +502,19 @@ namespace Oss
 
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage resonse = await localHttpClient.SendAsync(httpRequestMessage);
 
-                if (resonse.IsSuccessStatusCode == false)
+                HttpResponseMessage response;
+                if (cancellationToken != null)
+                    response = await localHttpClient.SendAsync(httpRequestMessage, (CancellationToken)cancellationToken);
+                else
+                    response = await localHttpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode == false)
                 {
-                    await ErrorResponseHandler.Handle(resonse);
+                    await ErrorResponseHandler.Handle(response);
                 }
                 var deseserializer = DeserializerFactory.GetFactory().CreateMultipartUploadDeserializer();
-                result = deseserializer.Deserialize(resonse);
+                result = deseserializer.Deserialize(response);
 
             }
             catch (Exception ex)

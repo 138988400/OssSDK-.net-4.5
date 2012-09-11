@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -15,21 +16,31 @@ namespace Oss
 {
     class test
     {
+        static CancellationTokenSource tokenSource = new CancellationTokenSource();
         static void callback(HttpProcessData processPercent)
         {
-            int i = processPercent.BytesTransferred;
-
+            if (processPercent.ProgressPercentage == 40)
+            {
+                tokenSource.Cancel();
+            }
         }
 
 
 
         static async void PutObject()
         {
-            OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-            FileStream fs = new FileStream(@"E:\电子书\代码大全.pdf", FileMode.Open);
-            ObjectMetadata oMetaData= new ObjectMetadata();
-            await temp.PutObject("devdoc", "代码大全.pdf", fs, oMetaData, callback);
-            fs.Dispose();
+            try
+            {
+                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
+                FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\test.pdf", FileMode.Open);
+                ObjectMetadata oMetaData = new ObjectMetadata();
+                await temp.PutObject("devdoc", "test.pdf", fs, oMetaData, callback, tokenSource.Token);
+                fs.Dispose();
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
 
@@ -253,13 +264,13 @@ namespace Oss
 
 
 
-                MultipartUploadInitiate();
+              //  MultipartUploadInitiate();
                // deleteObject();
                // getObject();
               //  listObjects();
              //   list();
                 //createBuket();
-              //  PutObject();
+               PutObject();
                // getBuketAcl();
             //    deleteBuket();
                // setBuketAcl();

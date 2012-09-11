@@ -10,7 +10,7 @@ namespace Oss
 {
     class OssHttpRequestMessage : HttpRequestMessage
     {
-
+       public   const string NONEEDBUKETNAME = "NONEEDBUKETNAME";
         public OssHttpRequestMessage(string bucketName, string key, IDictionary<string, string> _parameters = null)
             : this(OssUtils.DefaultEndpoint, bucketName, key, _parameters)
         {
@@ -18,16 +18,22 @@ namespace Oss
 
         public OssHttpRequestMessage(Uri endpoint, string bucketName, string key, IDictionary<string, string> _parameters = null)
         {
-            if (string.IsNullOrEmpty(bucketName))
+            if (bucketName != NONEEDBUKETNAME)
             {
-                throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
-            }
+                if (string.IsNullOrEmpty(bucketName))
+                {
+                    throw new ArgumentException(OssResources.ExceptionIfArgumentStringIsNullOrEmpty, "bucketName");
+                }
 
-            if (!OssUtils.IsBucketNameValid(bucketName))
+                if (!string.IsNullOrEmpty(bucketName) && !OssUtils.IsBucketNameValid(bucketName))
+                {
+                    throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
+                }
+            }
+            else
             {
-                throw new ArgumentException(OssResources.BucketNameInvalid, "bucketName");
+                bucketName = "";
             }
-
             Endpoint = endpoint;
             ResourcePath = "/" + ((bucketName != null) ? bucketName : "") + ((key != null) ? ("/" + key) : "");
             ResourcePathUrl = OssUtils.MakeResourcePath(bucketName, key);

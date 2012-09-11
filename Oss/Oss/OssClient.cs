@@ -105,7 +105,7 @@ namespace Oss
             IEnumerable<Bucket> result = null;
             try
             {
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(null, null);
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(OssHttpRequestMessage.NONEEDBUKETNAME, null);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;

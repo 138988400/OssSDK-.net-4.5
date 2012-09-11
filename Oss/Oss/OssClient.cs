@@ -133,7 +133,7 @@ namespace Oss
 
         }
 
-        public async Task <PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata, Action<HttpProcessData> uploadProcessCallback)
+        public async Task <PutObjectResult> PutObject(string bucketName, string key, Stream content, ObjectMetadata metadata, Action<HttpProcessData> uploadProcessCallback = null)
         {
             PutObjectResult result = null;
             try
@@ -157,17 +157,19 @@ namespace Oss
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
 
-
-                processMessageHander.HttpSendProgress += (sender, e) =>
+                if (uploadProcessCallback != null)
                 {
-                    uploadProcessCallback(new HttpProcessData()
+                    processMessageHander.HttpSendProgress += (sender, e) =>
                     {
-                        TotalBytes = e.TotalBytes,
-                        BytesTransferred = e.BytesTransferred,
-                        ProgressPercentage = e.ProgressPercentage
-                    });
+                        uploadProcessCallback(new HttpProcessData()
+                        {
+                            TotalBytes = e.TotalBytes,
+                            BytesTransferred = e.BytesTransferred,
+                            ProgressPercentage = e.ProgressPercentage
+                        });
 
-                };
+                    };
+                }
  
                 HttpResponseMessage response = await localHttpClient.SendAsync(httpRequestMessage);
 
@@ -294,12 +296,12 @@ namespace Oss
             return result;
         }
 
-        public async Task<OssObject> GetObject(string bucketName, string key, Action<HttpProcessData> downloadProcessCallback)
+        public async Task<OssObject> GetObject(string bucketName, string key, Action<HttpProcessData> downloadProcessCallback = null)
         {
             return await this.GetObject(new GetObjectRequest(bucketName, key), downloadProcessCallback);
         }
 
-        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest, Action<HttpProcessData> downloadProcessCallback)
+        public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest, Action<HttpProcessData> downloadProcessCallback = null)
         {
 
             OssObject result = null;
@@ -319,17 +321,19 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-
-                processMessageHander.HttpReceiveProgress += (sender, e) =>
+                if (downloadProcessCallback != null)
                 {
-                    downloadProcessCallback(new HttpProcessData()
+                    processMessageHander.HttpReceiveProgress += (sender, e) =>
                     {
-                        TotalBytes = e.TotalBytes,
-                        BytesTransferred = e.BytesTransferred,
-                        ProgressPercentage = e.ProgressPercentage
-                    }); ;
+                        downloadProcessCallback(new HttpProcessData()
+                        {
+                            TotalBytes = e.TotalBytes,
+                            BytesTransferred = e.BytesTransferred,
+                            ProgressPercentage = e.ProgressPercentage
+                        }); ;
 
-                };
+                    };
+                }
 
 
                 HttpResponseMessage response = await localHttpClient.SendAsync(httpRequestMessage);
@@ -350,7 +354,7 @@ namespace Oss
             return result;   
         }
 
-        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output, Action<HttpProcessData> downloadProcessCallback)
+        public async Task<ObjectMetadata> GetObject(GetObjectRequest getObjectRequest, Stream output, Action<HttpProcessData> downloadProcessCallback = null)
         {
             OssObject ossObject = await this.GetObject(getObjectRequest, downloadProcessCallback);
             using (ossObject.Content)
@@ -448,7 +452,7 @@ namespace Oss
 
         }
 
-        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject, Action<HttpProcessData> uploadProcessCallback)
+        public async Task<MultipartUploadResult> MultipartUpload(MultiUploadRequestData multiUploadObject, Action<HttpProcessData> uploadProcessCallback = null)
         {
             MultipartUploadResult result = null;
             try
@@ -468,16 +472,19 @@ namespace Oss
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
                 httpRequestMessage.Content = new StreamContent(multiUploadObject.Content);
 
-                processMessageHander.HttpSendProgress += (sender, e) =>
+                if (uploadProcessCallback != null)
                 {
-                    uploadProcessCallback(new HttpProcessData()
+                    processMessageHander.HttpSendProgress += (sender, e) =>
                     {
-                        TotalBytes = e.TotalBytes,
-                        BytesTransferred = e.BytesTransferred,
-                        ProgressPercentage = e.ProgressPercentage
-                    });
+                        uploadProcessCallback(new HttpProcessData()
+                        {
+                            TotalBytes = e.TotalBytes,
+                            BytesTransferred = e.BytesTransferred,
+                            ProgressPercentage = e.ProgressPercentage
+                        });
 
-                };
+                    };
+                }
 
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);

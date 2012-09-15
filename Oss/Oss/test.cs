@@ -117,7 +117,8 @@ namespace Oss
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
                 ListObjectsRequest arg = new ListObjectsRequest("devdoc2");
-               arg.MaxKeys = 3;
+               arg.Delimiter=@"/";
+               // arg.Prefix = @".NET Reflector 7.0.0.420 Crack/"
                 ObjectListing result = await temp.ListObjects(arg );
 
             }
@@ -267,10 +268,10 @@ namespace Oss
               //  MultipartUploadInitiate();
                // deleteObject();
                // getObject();
-              //  listObjects();
+               listObjects();
              //   list();
                 //createBuket();
-               PutObject();
+               //PutObject();
                // getBuketAcl();
             //    deleteBuket();
                // setBuketAcl();

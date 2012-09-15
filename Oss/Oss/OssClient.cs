@@ -278,8 +278,29 @@ namespace Oss
 
             try
             {
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                if (listObjectsRequest.Prefix != string.Empty)
+                {
+                    parameters.Add("prefix", listObjectsRequest.Prefix);
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(listObjectsRequest.BucketName, null);
+                }
+                if (listObjectsRequest.Delimiter != string.Empty)
+                {
+                    parameters.Add("delimiter", listObjectsRequest.Delimiter);
+
+                }
+                if (listObjectsRequest.Marker != string.Empty)
+                {
+                    parameters.Add("marker", listObjectsRequest.Marker);
+
+                }
+                if (listObjectsRequest.MaxKeys != null)
+                {
+                    parameters.Add("maxKeys", listObjectsRequest.MaxKeys.ToString());
+
+                }
+
+                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(listObjectsRequest.BucketName, null, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;

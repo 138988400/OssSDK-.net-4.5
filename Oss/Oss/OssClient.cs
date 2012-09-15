@@ -279,17 +279,17 @@ namespace Oss
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
-                if (listObjectsRequest.Prefix != string.Empty)
+                if (listObjectsRequest.Prefix != null)
                 {
                     parameters.Add("prefix", listObjectsRequest.Prefix);
 
                 }
-                if (listObjectsRequest.Delimiter != string.Empty)
+                if (listObjectsRequest.Delimiter != null)
                 {
                     parameters.Add("delimiter", listObjectsRequest.Delimiter);
 
                 }
-                if (listObjectsRequest.Marker != string.Empty)
+                if (listObjectsRequest.Marker != null)
                 {
                     parameters.Add("marker", listObjectsRequest.Marker);
 

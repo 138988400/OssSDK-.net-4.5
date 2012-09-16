@@ -9,7 +9,7 @@ namespace Oss
 {
     public class OssObjectSummary
     {
-        internal OssObjectSummary()
+        public OssObjectSummary()
         {
         }
 
@@ -18,18 +18,18 @@ namespace Oss
             return string.Format(CultureInfo.InvariantCulture, "[OSSObjectSummary BucketName={0}, Key={1}]", new object[] { this.BucketName, this.Key });
         }
 
-        public string BucketName { get; internal set; }
+        public string BucketName { get;  set; }
 
-        public string ETag { get; internal set; }
+        public string ETag { get;  set; }
 
-        public string Key { get; internal set; }
+        public string Key { get;  set; }
 
-        public DateTime LastModified { get; internal set; }
+        public DateTime LastModified { get;  set; }
 
-        public Owner Owner { get; internal set; }
+        public Owner Owner { get;  set; }
 
-        public long Size { get; internal set; }
+        public long Size { get;  set; }
 
-        public string StorageClass { get; internal set; }
+        public string StorageClass { get;  set; }
     }
 }

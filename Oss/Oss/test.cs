@@ -32,9 +32,10 @@ namespace Oss
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\test.pdf", FileMode.Open);
+                FileStream fs = new FileStream(@"C:\Users\zhonglei\Desktop\test.pdf", FileMode.Open);
+               // MemoryStream s = new MemoryStream();
                 ObjectMetadata oMetaData = new ObjectMetadata();
-                await temp.PutObject("devdoc", "test.pdf", fs, oMetaData, callback, tokenSource.Token);
+                await temp.PutObject("devdoc", "2/test.pdf", fs, oMetaData, null, tokenSource.Token);
                 fs.Dispose();
             }
             catch(Exception ex)
@@ -268,10 +269,10 @@ namespace Oss
               //  MultipartUploadInitiate();
                // deleteObject();
                // getObject();
-               listObjects();
+             //  listObjects();
              //   list();
                 //createBuket();
-               //PutObject();
+               PutObject();
                // getBuketAcl();
             //    deleteBuket();
                // setBuketAcl();

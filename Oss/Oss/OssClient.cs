@@ -56,14 +56,17 @@ namespace Oss
 
         public async Task<Bucket> CreateBucket(string bucketName)
         {
-            try{
+            OssHttpRequestMessage ossHttpRequestMessage = null;
+            HttpResponseMessage response = null;
+            try
+            {
 
-                OssHttpRequestMessage ossHttpRequestMessage = new OssHttpRequestMessage(bucketName, null);
+                 ossHttpRequestMessage = new OssHttpRequestMessage(bucketName, null);
 
                 ossHttpRequestMessage.Method = HttpMethod.Put;
                 ossHttpRequestMessage.Headers.Date = DateTime.UtcNow;
                 OssRequestSigner.Sign(ossHttpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(ossHttpRequestMessage);
+                 response = await httpClient.SendAsync(ossHttpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -73,21 +76,32 @@ namespace Oss
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (ossHttpRequestMessage != null)
+                    ossHttpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+
             }
             return new Bucket(bucketName);
         }
 
         public async Task DeleteBucket(string bucketName)
         {
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null);
+                 httpRequestMessage = new OssHttpRequestMessage(bucketName, null);
 
                 httpRequestMessage.Method = HttpMethod.Delete;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                 response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -97,6 +111,14 @@ namespace Oss
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
             }
 
         }
@@ -104,9 +126,11 @@ namespace Oss
         public async Task<IEnumerable<Bucket>> ListBuckets()
         {
             IEnumerable<Bucket> result = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(OssHttpRequestMessage.NONEEDBUKETNAME, null);
+                 httpRequestMessage = new OssHttpRequestMessage(OssHttpRequestMessage.NONEEDBUKETNAME, null);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
@@ -114,7 +138,7 @@ namespace Oss
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
 
 
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                 response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -129,6 +153,14 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
 
             return result;
 
@@ -138,13 +170,18 @@ namespace Oss
             Action<HttpProcessData> uploadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
             PutObjectResult result = null;
+            HttpClientHandler hand = null;
+            ProgressMessageHandler processMessageHander = null;
+            HttpClient localHttpClient = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
-                HttpClientHandler hand = new HttpClientHandler();
-                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
-                HttpClient localHttpClient = new HttpClient(processMessageHander);
+                 hand = new HttpClientHandler();
+                 processMessageHander = new ProgressMessageHandler(hand);
+                 localHttpClient = new HttpClient(processMessageHander);
                 localHttpClient.Timeout += new TimeSpan(2 * TimeSpan.TicksPerHour); 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
+                 httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
 
 
 
@@ -173,7 +210,7 @@ namespace Oss
                     };
                 }
 
-                HttpResponseMessage response;
+                
                 if(cancellationToken != null)
                     response = await localHttpClient.SendAsync(httpRequestMessage, (CancellationToken)cancellationToken);
                 else
@@ -193,6 +230,24 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (hand != null)
+                    hand.Dispose();
+
+                if (processMessageHander != null)
+                    processMessageHander.Dispose();
+
+                if (localHttpClient != null)
+                    localHttpClient.Dispose();
+
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+
+                if (response != null)
+                    response.Dispose();
+            }
 
             return result;
 
@@ -201,17 +256,19 @@ namespace Oss
         public async Task<AccessControlList> GetBucketAcl(string bucketName)
         {
             AccessControlList result  = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("acl", null);
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null, parameters);
+                 httpRequestMessage = new OssHttpRequestMessage(bucketName, null, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                 response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -224,7 +281,14 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
 
+                if (response != null)
+                    response.Dispose();
+            }
             return result;
 
 
@@ -233,17 +297,19 @@ namespace Oss
 
         public async Task SetBucketAcl(string bucketName, CannedAccessControlList acl)
         {
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("acl", null);
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null,parameters);
+                httpRequestMessage = new OssHttpRequestMessage(bucketName, null,parameters);
 
                 httpRequestMessage.Method = HttpMethod.Put;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
                 httpRequestMessage.Headers.Add("x-oss-acl", acl.GetStringValue());
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -253,6 +319,14 @@ namespace Oss
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
             }
         }
 
@@ -275,7 +349,8 @@ namespace Oss
         public async Task<ObjectListing> ListObjects(ListObjectsRequest listObjectsRequest)
         {
             ObjectListing result = null;
-
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
@@ -300,13 +375,13 @@ namespace Oss
 
                 }
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(listObjectsRequest.BucketName, null, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(listObjectsRequest.BucketName, null, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -319,6 +394,14 @@ namespace Oss
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
             }
             return result;
         }
@@ -335,14 +418,20 @@ namespace Oss
 
             OssObject result = null;
 
+            HttpClientHandler hand = null;
+            ProgressMessageHandler processMessageHander = null;
+            HttpClient localHttpClient = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
+
             try
             {
-                HttpClientHandler hand = new HttpClientHandler();
-                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
-                HttpClient localHttpClient = new HttpClient(processMessageHander);
+                hand = new HttpClientHandler();
+                processMessageHander = new ProgressMessageHandler(hand);
+                localHttpClient = new HttpClient(processMessageHander);
                 localHttpClient.Timeout += new TimeSpan(2 * TimeSpan.TicksPerHour); 
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(getObjectRequest.BucketName, getObjectRequest.Key);
+                httpRequestMessage = new OssHttpRequestMessage(getObjectRequest.BucketName, getObjectRequest.Key);
                 getObjectRequest.ResponseHeaders.Populate(httpRequestMessage.Headers);
                 getObjectRequest.Populate(httpRequestMessage.Headers);
 
@@ -364,7 +453,6 @@ namespace Oss
                     };
                 }
 
-                HttpResponseMessage response;
                 if (cancellationToken != null)
                     response = await localHttpClient.SendAsync(httpRequestMessage, (CancellationToken)cancellationToken);
                 else
@@ -383,6 +471,25 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (hand != null)
+                    hand.Dispose();
+
+                if (processMessageHander != null)
+                    processMessageHander.Dispose();
+
+                if (localHttpClient != null)
+                    localHttpClient.Dispose();
+
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+
+                if (response != null)
+                    response.Dispose();
+            }
+
 
             return result;   
         }
@@ -402,17 +509,18 @@ namespace Oss
         public async  Task<ObjectMetadata> GetObjectMetadata(string bucketName, string key)
         {
             ObjectMetadata result = null;
-
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
+                httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
 
                 httpRequestMessage.Method = HttpMethod.Head;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -426,21 +534,31 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
             return result;
             
         }
 
         public async Task DeleteObject(string bucketName, string key)
         {
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
+                httpRequestMessage = new OssHttpRequestMessage(bucketName, key);
 
                 httpRequestMessage.Method = HttpMethod.Delete;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -451,24 +569,34 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
 
         }
 
         public async Task<string> MultipartUploadInitiate(string bucketName, string key)
         {
             string result = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("uploads", null);
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, key, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(bucketName, key, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Post;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -482,6 +610,14 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
             return result;
 
         }
@@ -490,18 +626,25 @@ namespace Oss
             Action<HttpProcessData> uploadProcessCallback = null, CancellationToken? cancellationToken = null)
         {
             MultipartUploadResult result = null;
+
+            HttpClientHandler hand = null;
+            ProgressMessageHandler processMessageHander = null;
+            HttpClient localHttpClient = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
+
             try
             {
-                HttpClientHandler hand = new HttpClientHandler();
-                ProgressMessageHandler processMessageHander = new ProgressMessageHandler(hand);
-                HttpClient localHttpClient = new HttpClient(processMessageHander);
+                hand = new HttpClientHandler();
+                processMessageHander = new ProgressMessageHandler(hand);
+                localHttpClient = new HttpClient(processMessageHander);
                 localHttpClient.Timeout += new TimeSpan(2 * TimeSpan.TicksPerHour); 
 
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("partNumber", multiUploadObject.PartNumber);
                 parameters.Add("uploadId", multiUploadObject.UploadId);
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Put;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
@@ -524,7 +667,6 @@ namespace Oss
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
 
-                HttpResponseMessage response;
                 if (cancellationToken != null)
                     response = await localHttpClient.SendAsync(httpRequestMessage, (CancellationToken)cancellationToken);
                 else
@@ -542,6 +684,24 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (hand != null)
+                    hand.Dispose();
+
+                if (processMessageHander != null)
+                    processMessageHander.Dispose();
+
+                if (localHttpClient != null)
+                    localHttpClient.Dispose();
+
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+
+                if (response != null)
+                    response.Dispose();
+            }
             return result;
 
         }
@@ -549,6 +709,8 @@ namespace Oss
         public async Task<CompleteMultipartUploadResult> CompleteMultipartUpload(CompleteMultipartUploadModel completeMultipartUploadModel)
         {
             CompleteMultipartUploadResult result = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
 
@@ -557,7 +719,7 @@ namespace Oss
                 parameters.Add("uploadId", completeMultipartUploadModel.UploadId);
 
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(completeMultipartUploadModel.Bucket, completeMultipartUploadModel.Key, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(completeMultipartUploadModel.Bucket, completeMultipartUploadModel.Key, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Post;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
@@ -569,7 +731,7 @@ namespace Oss
                 httpRequestMessage.Content = new StreamContent(serializer.Serialize(completeMultipartUploadModel));
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -583,6 +745,14 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
             return result;
 
         }
@@ -590,19 +760,21 @@ namespace Oss
 
         public async Task DeleteMultipartUpload(MultiUploadRequestData multiUploadObject)
         {
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("partNumber", multiUploadObject.PartNumber);
                 parameters.Add("uploadId", multiUploadObject.UploadId);
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(multiUploadObject.Bucket, multiUploadObject.Key, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Delete;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -613,12 +785,22 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
 
         }
 
         public async Task<ListPartsResult> ListMultiUploadParts(string buketName, string key, string uploadId)
         {
             ListPartsResult result = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
 
@@ -627,13 +809,13 @@ namespace Oss
                 parameters.Add("uploadId", uploadId);
 
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(buketName, key, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(buketName, key, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -647,6 +829,14 @@ namespace Oss
             {
                 throw ex;
             }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
+            }
             return result;
 
         }
@@ -654,18 +844,20 @@ namespace Oss
         public async Task<ListMultipartUploadsResult> ListMultipartUploads(string bucketName)
         {
             ListMultipartUploadsResult result = null;
+            OssHttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage response = null;
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("uploads", null);
 
-                OssHttpRequestMessage httpRequestMessage = new OssHttpRequestMessage(bucketName, null, parameters);
+                httpRequestMessage = new OssHttpRequestMessage(bucketName, null, parameters);
 
                 httpRequestMessage.Method = HttpMethod.Get;
                 httpRequestMessage.Headers.Date = DateTime.UtcNow;
 
                 OssRequestSigner.Sign(httpRequestMessage, networkCredential);
-                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
+                response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode == false)
                 {
@@ -677,6 +869,14 @@ namespace Oss
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (httpRequestMessage != null)
+                    httpRequestMessage.Dispose();
+
+                if (response != null)
+                    response.Dispose();
             }
             return result;
 

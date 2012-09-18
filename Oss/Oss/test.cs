@@ -32,10 +32,10 @@ namespace Oss
             try
             {
                 OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                FileStream fs = new FileStream(@"C:\Users\zhonglei\Desktop\test.pdf", FileMode.Open);
+                FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\1.txt", FileMode.Open);
                // MemoryStream s = new MemoryStream();
                 ObjectMetadata oMetaData = new ObjectMetadata();
-                await temp.PutObject("devdoc", "2/test.pdf", fs, oMetaData, null, tokenSource.Token);
+                await temp.PutObject("devdoc2", "5/1.txt", fs, oMetaData, null, tokenSource.Token);
                 fs.Dispose();
             }
             catch(Exception ex)

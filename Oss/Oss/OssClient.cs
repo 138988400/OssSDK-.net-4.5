@@ -484,10 +484,6 @@ namespace Oss
 
                 if (httpRequestMessage != null)
                     httpRequestMessage.Dispose();
-
-
-                if (response != null)
-                    response.Dispose();
             }
 
 

@@ -1,0 +1,10 @@
+C:\github\oss\Oss\Oss\bin\Release\Oss.dll.config
+C:\github\oss\Oss\Oss\bin\Release\Oss.dll
+C:\github\oss\Oss\Oss\bin\Release\Oss.pdb
+C:\github\oss\Oss\Oss\bin\Release\System.Net.Http.Formatting.dll
+C:\github\oss\Oss\Oss\bin\Release\System.Net.Http.Formatting.xml
+C:\github\oss\Oss\Oss\bin\Release\zh-Hans\System.Net.Http.Formatting.resources.dll
+C:\github\oss\Oss\Oss\obj\Release\Oss.OssResources.resources
+C:\github\oss\Oss\Oss\obj\Release\Oss.csproj.GenerateResource.Cache
+C:\github\oss\Oss\Oss\obj\Release\Oss.dll
+C:\github\oss\Oss\Oss\obj\Release\Oss.pdb

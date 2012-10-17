@@ -1,22 +1,29 @@
  OssSDK  .Net 4.5
+
 一 简介
+
 用C#做客户端时，发现官网上发布的.Net SDK 不太好用。正逢微软发布vs2012和 .net4.5，在原来的.net sdk代码基础上重写了SDK。接口与原来的基本保持一致。
 新SDK API基于TPL (Task Parallel Library)。
 
 二 新增功能
+
 1 所有API均为异步，可以用async, await很方便的调用异步操作请求，
 且效率很高。对客户端UI的操作平滑性有很好的支持。
 2 在put和get object接口中添加HttpProcess callback的Action参数，可以回调下载以及上传的数据进度。（Percent, BytesTransferred, TotalBytes）
 3 在put和get object接口中添加 CancellationToken参数，可以取消上传或下载的任务。4 增加MultiPart Upload的API，支持分块上传。
 
 三 源代码网络地址
+
 https://github.com/ZhongleiYang/sdk
-9月初我在社区开源过这个SDK源代http://bbs.aliyun.com/read.php?tid=120577&fpage=5，后来因为客户端代码的关系，改变了源代码地址。
+9月初我在社区开源过这个SDK源代http://bbs.aliyun.com/read.php?tid=120577&fpage=5
+后来因为客户端代码的关系，改变了源代码地址。
+
 四 API
+
 API位于命名空间位于Oss. OssClient，调用API成功则返回，错误抛异常。
 所有API如下：
 
-//创建OssClient对象
+        //创建OssClient对象
         public OssClient(string accessId, string accessKey);           
         public OssClient(string endpoint, string accessId, string accessKey);
         public OssClient(Uri endpoint, string accessId, string accessKey);
@@ -28,7 +35,7 @@ API位于命名空间位于Oss. OssClient，调用API成功则返回，错误抛
         public async Task DeleteBucket(string bucketName);
    
        //获得Bucket的权限
- public async Task<AccessControlList> GetBucketAcl(string bucketName)
+        public async Task<AccessControlList> GetBucketAcl(string bucketName)
        
         //设置Bucket的权限
         public async Task SetBucketAcl(string bucketName, CannedAccessControlList acl);
@@ -42,7 +49,7 @@ API位于命名空间位于Oss. OssClient，调用API成功则返回，错误抛
      
 
         //列举Objects
-public async Task<ObjectListing> ListObjects(string bucketName);
+       public async Task<ObjectListing> ListObjects(string bucketName);
        public async Task<ObjectListing> ListObjects(string bucketName, string prefix);
        public async Task<ObjectListing> ListObjects(ListObjectsRequest listObjectsRequest);
      
@@ -76,58 +83,60 @@ public async Task<ObjectListing> ListObjects(string bucketName);
         public async Task DeleteMultipartUpload(MultiUploadRequestData multiUploadObject);
      
        //获得分块上传的结果
- public async Task<ListPartsResult> ListMultiUploadParts(string buketName, string key, string uploadId);
+       public async Task<ListPartsResult> ListMultiUploadParts(string buketName, string key, string uploadId);
         
         //获得Bucket所有分块上传的结果
         public async Task<ListMultipartUploadsResult> ListMultipartUploads(string bucketName);
         
 五 主要API说明及用例（其他参照原先SDK说明和OSSAPI的说明）
+
 1.
 public async Task<OssObject> GetObject(GetObjectRequest getObjectRequest,
             Action<HttpProcessData> downloadProcessCallback = null, CancellationToken? cancellationToken = null)
 用途：下载Objet
 用例：这段代码在调用getOject()时，下载40%的时候，取消任务。
 
-CancellationTokenSource tokenSource = new CancellationTokenSource();
-void callback(HttpProcessData processPercent)
-{
-if (processPercent.ProgressPercentage == 40)
-{
-     	tokenSource.Cancel();
-}
-}
+    CancellationTokenSource tokenSource = new CancellationTokenSource();
+    void callback(HttpProcessData processPercent)
+    {
+        if (processPercent.ProgressPercentage == 40)
+        {
+             	tokenSource.Cancel();
+        }
+    }
 
-void getObject()
-{
-     FileStream fs = null;
-     Stream stream = null;
-    try
-    {   
-   OssObject result = await temp.GetObject("devdoc", "c# 5.0.pdf", callback);
-stream = obj.Content;
-   fs = new FileStream(fileName, FileMode.OpenOrCreate);
-   await stream.CopyToAsync(fs);
-   fs.Position = 0;
-   fs.Flush();
-}
-catch (Exception ex)
-   {
-         throw ex;
-   }
-   finally
-   {
-        if(fs != null)
-           fs.Close();
-
-        if (stream != null)
-            stream.Close();
-  }
-
-}
+     void getObject()
+     {
+         FileStream fs = null;
+         Stream stream = null;
+         try
+         {   
+             OssObject result = await temp.GetObject("devdoc", "c# 5.0.pdf", callback);
+             stream = obj.Content;
+             fs = new FileStream(fileName, FileMode.OpenOrCreate);
+             await stream.CopyToAsync(fs);
+             fs.Position = 0;
+             fs.Flush();
+         }
+         catch (Exception ex)
+         {
+              throw ex;
+         }
+         finally
+         {
+             if(fs != null)
+                fs.Close();
+     
+             if (stream != null)
+                 stream.Close();
+         }
+     
+     }
 
 2．多块上传示例
+
 这段代码调用MultipartUploadSample，实现对文件c# 5.0.pdf 分2块上传
-         static int ReadChunk(Stream stream, byte[] chunk)
+        static int ReadChunk(Stream stream, byte[] chunk)
         {
             int index = 0;
             while (index < chunk.Length)

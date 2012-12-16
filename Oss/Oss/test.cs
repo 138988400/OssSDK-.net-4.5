@@ -31,8 +31,8 @@ namespace Oss
         {
             try
             {
-                OssClient temp = new OssClient("bm9crcnr0rtnuw8bnrfvq7w8", "RbtJoExTnA8vYLynUfDh7Ior+oM=");
-                FileStream fs = new FileStream(@"C:\Users\yangzhl\Desktop\1.txt", FileMode.Open);
+                OssClient temp = new OssClient("v12bbAtA0rnTw0Wt", "Gz3OBVL4QHIWBBh5rD0kg1f9F4FnZU");
+                FileStream fs = new FileStream(@"C:\Users\zhonglei\Desktop\SLM2.m", FileMode.Open);
                // MemoryStream s = new MemoryStream();
                 ObjectMetadata oMetaData = new ObjectMetadata();
                 await temp.PutObject("devdoc2", "5/1.txt", fs, oMetaData, null, tokenSource.Token);

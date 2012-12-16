@@ -8,3 +8,14 @@ C:\github\oss\Oss\Oss\obj\Debug\Oss.OssResources.resources
 C:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
 C:\github\oss\Oss\Oss\obj\Debug\Oss.dll
 C:\github\oss\Oss\Oss\obj\Debug\Oss.pdb
+K:\github\oss\Oss\Oss\obj\Debug\Oss.pdb
+K:\github\oss\Oss\Oss\bin\Debug\Oss.pdb
+K:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.dll
+K:\github\oss\Oss\Oss\bin\Debug\System.Net.Http.Formatting.xml
+K:\github\oss\Oss\Oss\bin\Debug\zh-Hans\System.Net.Http.Formatting.resources.dll
+K:\github\oss\Oss\Oss\obj\Debug\Oss.csprojResolveAssemblyReference.cache
+K:\github\oss\Oss\Oss\obj\Debug\Oss.OssResources.resources
+K:\github\oss\Oss\Oss\obj\Debug\Oss.csproj.GenerateResource.Cache
+K:\github\oss\Oss\Oss\bin\Debug\Oss.dll.config
+K:\github\oss\Oss\Oss\bin\Debug\Oss.dll
+K:\github\oss\Oss\Oss\obj\Debug\Oss.dll

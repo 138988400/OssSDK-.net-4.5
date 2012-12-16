@@ -11,7 +11,7 @@ namespace Oss.Utilities
     {
         public const int BufferSize = 0x2000;
         public const string Charset = "utf-8";
-        public static readonly Uri DefaultEndpoint = new Uri("http://storage.aliyun.com");
+        public static readonly Uri DefaultEndpoint = new Uri("http://oss.aliyuncs.com");
         public const long MaxFileSzie = 0x140000000L;
 
         public static bool IsBucketNameValid(string bucketName)
